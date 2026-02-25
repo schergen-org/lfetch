@@ -5,6 +5,7 @@ inductive InfoKey
   | os
   | user
   | shell
+  | home
   deriving Repr, DecidableEq
 
 def InfoKey.toString : InfoKey → String
@@ -12,6 +13,7 @@ def InfoKey.toString : InfoKey → String
   | .os     => "os"
   | .user   => "user"
   | .shell  => "shell"
+  | .home   => "home"
 
 private def trimLine (s : String) : String :=
   (s.trimAscii).toString
@@ -22,6 +24,7 @@ def InfoKey.parse (s : String) : Option InfoKey :=
   | "os"        => some .os
   | "user"      => some .user
   | "shell"     => some .shell
+  | "home"      => some .home
   | _        => none
 
 structure Config where
