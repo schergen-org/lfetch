@@ -1,4 +1,4 @@
-namespace Lfetch.Info.Drive
+namespace Lfetch.drive
 
 private def excludedFsTypes : List String :=
   ["tmpfs", "devtmpfs", "squashfs", "overlay", "efivarfs", "devpts",
@@ -37,7 +37,7 @@ private def parseDfLine (line : String) : Option DriveEntry :=
 private def usageBar (pctStr : String) (barWidth : Nat := 10) : String :=
   let pctClean := pctStr.replace "%" "" |> trimLine
   let pct := pctClean.toNat?.getD 0
-  let filled := (pct * barWidth + 50) / 100   -- rounded
+  let filled := (pct * barWidth + 50) / 100
   let empty  := barWidth - filled
   let bar := String.ofList (List.replicate filled '█') ++
              String.ofList (List.replicate empty  '░')
@@ -71,4 +71,4 @@ def fetch : IO String := do
   let formatted := realEntries.map formatEntry
   return "\n" ++ String.intercalate "\n" formatted
 
-end Lfetch.Info.Drive
+end Lfetch.drive
