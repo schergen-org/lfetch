@@ -1,0 +1,10 @@
+name = "lfetch"
+version = "0.1.0"
+defaultTargets = ["lfetch"]
+
+[[lean_lib]]
+name = "Lfetch"
+
+[[lean_exe]]
+name = "lfetch"
+root = "Main"
