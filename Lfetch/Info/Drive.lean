@@ -1,4 +1,4 @@
-namespace Lfetch.drive
+namespace Lfetch.Info.Drive
 
 private def excludedFsTypes : List String :=
   ["tmpfs", "devtmpfs", "squashfs", "overlay", "efivarfs", "devpts",
@@ -71,4 +71,4 @@ def fetch : IO String := do
   let formatted := realEntries.map formatEntry
   return "\n" ++ String.intercalate "\n" formatted
 
-end Lfetch.drive
+end Lfetch.Info.Drive

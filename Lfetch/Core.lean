@@ -16,7 +16,7 @@ namespace Lfetch
 def runInfo : InfoKey → IO String
   | .dummy     => Info.Dummy.fetch
   | .os        => Info.OS.fetch
-  | .drive     => drive.fetch
+  | .drive     => Info.Drive.fetch
   | .user      => Info.User.fetch
   | .shell     => Info.Shell.fetch
   | .home      => Info.Home.fetch
