@@ -11,6 +11,7 @@ inductive InfoKey
   | arch
   | terminal
   | locale
+  | uptime
   deriving Repr, DecidableEq
 
 def InfoKey.toString : InfoKey → String
@@ -24,6 +25,7 @@ def InfoKey.toString : InfoKey → String
   | .arch   => "arch"
   | .terminal => "terminal"
   | .locale => "locale"
+  | .uptime => "uptime"
 
 private def trimLine (s : String) : String :=
   (s.trimAscii).toString
@@ -40,6 +42,7 @@ def InfoKey.parse (s : String) : Option InfoKey :=
   | "arch"      => some .arch
   | "terminal"  => some .terminal
   | "locale"    => some .locale
+  | "uptime"    => some .uptime
   | _        => none
 
 structure Config where
