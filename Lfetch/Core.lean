@@ -10,6 +10,7 @@ import Lfetch.Info.Arch
 import Lfetch.Info.Terminal
 import Lfetch.Info.Locale
 import Lfetch.Info.Uptime
+import Lfetch.Info.CPU
 
 namespace Lfetch
 
@@ -25,6 +26,7 @@ def runInfo : InfoKey → IO String
   | .terminal   => Info.Terminal.fetch
   | .locale    => Info.Language.fetch
   | .uptime    => Info.Uptime.fetch
+  | .cpu       => Info.CPU.fetch
 
 def fetchAll (keys : List InfoKey) : IO (List (InfoKey × String)) := do
   keys.mapM (fun k => do
