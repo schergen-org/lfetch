@@ -10,6 +10,7 @@ inductive InfoKey
   | kernel
   | arch
   | terminal
+  | locale
   deriving Repr, DecidableEq
 
 def InfoKey.toString : InfoKey → String
@@ -22,6 +23,7 @@ def InfoKey.toString : InfoKey → String
   | .kernel => "kernel"
   | .arch   => "arch"
   | .terminal => "terminal"
+  | .locale => "locale"
 
 private def trimLine (s : String) : String :=
   (s.trimAscii).toString
@@ -37,6 +39,7 @@ def InfoKey.parse (s : String) : Option InfoKey :=
   | "kernel"    => some .kernel
   | "arch"      => some .arch
   | "terminal"  => some .terminal
+  | "locale"    => some .locale
   | _        => none
 
 structure Config where
