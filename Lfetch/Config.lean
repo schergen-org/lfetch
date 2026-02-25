@@ -3,11 +3,13 @@ namespace Lfetch
 inductive InfoKey
   | dummy
   | os
+  | infoDrive
   deriving Repr, DecidableEq
 
 def InfoKey.toString : InfoKey → String
   | .dummy  => "dummy"
   | .os     => "os"
+  | .infoDrive => "info-drive"
 
 private def trimLine (s : String) : String :=
   (s.trimAscii).toString
@@ -16,6 +18,7 @@ def InfoKey.parse (s : String) : Option InfoKey :=
   match (trimLine s).toLower with
   | "dummy"     => some .dummy
   | "os"        => some .os
+  | "info-drive" => some .infoDrive
   | _        => none
 
 structure Config where
