@@ -2,6 +2,14 @@ import Lfetch.Config
 import Lfetch.Info.Dummy
 import Lfetch.Info.OS
 import Lfetch.Info.«info-drive»
+import Lfetch.Info.User
+import Lfetch.Info.Shell
+import Lfetch.Info.Home
+import Lfetch.Info.Hostname
+import Lfetch.Info.Kernel
+import Lfetch.Info.Arch
+import Lfetch.Info.Terminal
+import Lfetch.Info.Locale
 
 namespace Lfetch
 
@@ -9,6 +17,14 @@ def runInfo : InfoKey → IO String
   | .dummy     => Info.Dummy.fetch
   | .os        => Info.OS.fetch
   | .infoDrive => Info.Drive.fetch
+  | .user      => Info.User.fetch
+  | .shell     => Info.Shell.fetch
+  | .home      => Info.Home.fetch
+  | .hostname  => Info.Host.fetch
+  | .kernel    => Info.Kernel.fetch
+  | .arch      => Info.Arch.fetch
+  | .terminal   => Info.Terminal.fetch
+  | .locale    => Info.Language.fetch
 
 def fetchAll (keys : List InfoKey) : IO (List (InfoKey × String)) := do
   keys.mapM (fun k => do

@@ -4,12 +4,28 @@ inductive InfoKey
   | dummy
   | os
   | infoDrive
+  | user
+  | shell
+  | home
+  | hostname
+  | kernel
+  | arch
+  | terminal
+  | locale
   deriving Repr, DecidableEq
 
 def InfoKey.toString : InfoKey → String
   | .dummy  => "dummy"
   | .os     => "os"
   | .infoDrive => "info-drive"
+  | .user   => "user"
+  | .shell  => "shell"
+  | .home   => "home"
+  | .hostname => "hostname"
+  | .kernel => "kernel"
+  | .arch   => "arch"
+  | .terminal => "terminal"
+  | .locale => "locale"
 
 private def trimLine (s : String) : String :=
   (s.trimAscii).toString
@@ -19,6 +35,14 @@ def InfoKey.parse (s : String) : Option InfoKey :=
   | "dummy"     => some .dummy
   | "os"        => some .os
   | "info-drive" => some .infoDrive
+  | "user"      => some .user
+  | "shell"     => some .shell
+  | "home"      => some .home
+  | "hostname"  => some .hostname
+  | "kernel"    => some .kernel
+  | "arch"      => some .arch
+  | "terminal"  => some .terminal
+  | "locale"    => some .locale
   | _        => none
 
 structure Config where
