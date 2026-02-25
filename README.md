@@ -66,6 +66,76 @@ battery
 
 Only the keys present in the config are printed, in the same order as listed.
 
+
+
+
+## Installation (Linux)
+
+The GitHub Release contains a prebuilt executable called `lfetch`. To be able to run it by simply typing `lfetch` in the terminal, the file must:
+
+1. be executable (`chmod +x`)
+2. be placed in a directory that is in your `$PATH` (e.g. `~/.local/bin` or `/usr/local/bin`)
+
+### Option A (recommended, no sudo): `~/.local/bin`
+
+1) Download `lfetch` from the GitHub Release (e.g. to `~/Downloads`)
+
+2) Create the target directory:
+```bash
+mkdir -p ~/.local/bin
+```
+
+3) Make it executable and move it into place:
+```bash
+chmod +x ~/Downloads/lfetch
+mv ~/Downloads/lfetch ~/.local/bin/lfetch
+```
+
+4) Ensure `~/.local/bin` is in your `PATH`:
+```bash
+echo $PATH
+```
+
+If it’s not listed, add it to your shell config:
+
+**bash:**
+```bash
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+**zsh:**
+```bash
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+Now you can run:
+```bash
+lfetch
+```
+
+---
+
+### Option B (system-wide, with sudo): `/usr/local/bin`
+
+1) Download `lfetch` from the GitHub Release (e.g. to `~/Downloads`)
+
+2) Install it system-wide:
+```bash
+chmod +x ~/Downloads/lfetch
+sudo mv ~/Downloads/lfetch /usr/local/bin/lfetch
+```
+
+Run:
+```bash
+lfetch
+```
+
+---
+
+
+
 ## Roadmap
 Planned improvements:
 
