@@ -25,7 +25,7 @@ private def readBatteryStatus (batPath : System.FilePath) : IO String := do
 
 private def statusIcon (status : String) : String :=
   match status.toLower with
-  | "charging"     => "⚡ Charging"
+  | "charging"     => "Charging"
   | "discharging"  => "Discharging"
   | "full"         => "Full"
   | "not charging" => "Not charging"
