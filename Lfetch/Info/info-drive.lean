@@ -52,7 +52,6 @@ private def isRealFs (e : DriveEntry) : Bool :=
   let notExcluded := !(excludedFsTypes.any (· == e.filesystem))
   startsReal && notExcluded
 
-/-- Run `df -h`, parse & format the output. -/
 def fetch : IO String := do
   let result ← IO.Process.output {
     cmd  := "df"
@@ -63,7 +62,7 @@ def fetch : IO String := do
   let lines := result.stdout.splitOn "\n"
     |>.map trimLine
     |>.filter (· ≠ "")
-  -- Skip the header line
+
   let dataLines := lines.drop 1
   let entries := dataLines.filterMap parseDfLine
   let realEntries := entries.filter isRealFs
