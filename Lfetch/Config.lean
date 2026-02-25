@@ -9,6 +9,7 @@ inductive InfoKey
   | hostname
   | kernel
   | arch
+  | terminal
   deriving Repr, DecidableEq
 
 def InfoKey.toString : InfoKey → String
@@ -20,6 +21,7 @@ def InfoKey.toString : InfoKey → String
   | .hostname => "hostname"
   | .kernel => "kernel"
   | .arch   => "arch"
+  | .terminal => "terminal"
 
 private def trimLine (s : String) : String :=
   (s.trimAscii).toString
@@ -34,6 +36,7 @@ def InfoKey.parse (s : String) : Option InfoKey :=
   | "hostname"  => some .hostname
   | "kernel"    => some .kernel
   | "arch"      => some .arch
+  | "terminal"  => some .terminal
   | _        => none
 
 structure Config where

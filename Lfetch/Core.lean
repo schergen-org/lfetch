@@ -7,6 +7,7 @@ import Lfetch.Info.Home
 import Lfetch.Info.Hostname
 import Lfetch.Info.Kernel
 import Lfetch.Info.Arch
+import Lfetch.Info.Terminal
 
 namespace Lfetch
 
@@ -19,6 +20,7 @@ def runInfo : InfoKey → IO String
   | .hostname  => Info.Host.fetch
   | .kernel    => Info.Kernel.fetch
   | .arch      => Info.Arch.fetch
+  | .terminal   => Info.Terminal.fetch
 
 def fetchAll (keys : List InfoKey) : IO (List (InfoKey × String)) := do
   keys.mapM (fun k => do
