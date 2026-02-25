@@ -3,6 +3,7 @@ namespace Lfetch
 inductive InfoKey
   | dummy
   | os
+  | drive
   | user
   | shell
   | home
@@ -19,6 +20,7 @@ inductive InfoKey
 def InfoKey.toString : InfoKey → String
   | .dummy  => "dummy"
   | .os     => "os"
+  | .drive => "drive"
   | .user   => "user"
   | .shell  => "shell"
   | .home   => "home"
@@ -38,6 +40,7 @@ def InfoKey.parse (s : String) : Option InfoKey :=
   match (trimLine s).toLower with
   | "dummy"     => some .dummy
   | "os"        => some .os
+  | "drive" => some .drive
   | "user"      => some .user
   | "shell"     => some .shell
   | "home"      => some .home

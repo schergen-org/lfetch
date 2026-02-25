@@ -1,6 +1,7 @@
 import Lfetch.Config
 import Lfetch.Info.Dummy
 import Lfetch.Info.OS
+import Lfetch.Info.Drive
 import Lfetch.Info.User
 import Lfetch.Info.Shell
 import Lfetch.Info.Home
@@ -18,6 +19,7 @@ namespace Lfetch
 def runInfo : InfoKey → IO String
   | .dummy     => Info.Dummy.fetch
   | .os        => Info.OS.fetch
+  | .drive     => Info.Drive.fetch
   | .user      => Info.User.fetch
   | .shell     => Info.Shell.fetch
   | .home      => Info.Home.fetch
