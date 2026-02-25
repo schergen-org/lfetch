@@ -3,3 +3,68 @@
 <p align="center">A simple system information tool written in LEAN 4</p><br>
 <sup><p align="center">Functionally inspired by <a href="https://github.com/dylanaraps/pfetch">pfetch</a>, <a href="https://github.com/dylanaraps/neofetch">neofetch</a>, ...</p></sup><br>
 
+<img width="490" height="302" alt="2026-02-25_13-43-38" src="https://github.com/user-attachments/assets/510591db-4058-4832-9157-b05b66c6bfb9" align="right" />
+
+
+`lfetch` is a small “fetch”-style system information tool, similar in spirit to **neofetch**, but written in **Lean 4**. It prints a set of basic system details in the terminal.
+
+What gets printed (and in what order) is controlled through a simple config file.
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+## Configuration
+
+`lfetch` reads its configuration from:
+
+```text
+$HOME/.config/lftech/config
+```
+
+Put one entry per line. The order is arbitrary and determines the output order. You can list only a few items or all of them.
+
+### Available keys
+
+- `OS`
+- `drive`
+- `user`
+- `shell`
+- `home`
+- `hostname`
+- `kernel`
+- `arch`
+- `terminal`
+- `locale`
+- `uptime`
+- `ram`
+- `cpu`
+- `battery`
+
+### Example config
+
+```text
+user
+hostname
+OS
+kernel
+arch
+shell
+terminal
+uptime
+ram
+cpu
+battery
+```
+
+Only the keys present in the config are printed, in the same order as listed.
+
+## Roadmap
+Planned improvements:
+
+- Better / nicer formatting of the output (intended to use the Lean library **Leansi**)
+- More customization options (e.g. configurable colors)
+- ASCII art support (neofetch-style)
