@@ -15,6 +15,7 @@ inductive InfoKey
   | uptime
   | cpu
   | ram
+  | battery
   deriving Repr, DecidableEq
 
 def InfoKey.toString : InfoKey → String
@@ -32,6 +33,7 @@ def InfoKey.toString : InfoKey → String
   | .uptime => "uptime"
   | .cpu    => "cpu"
   | .ram    => "ram"
+  | .battery => "battery"
 
 private def trimLine (s : String) : String :=
   (s.trimAscii).toString
@@ -52,6 +54,7 @@ def InfoKey.parse (s : String) : Option InfoKey :=
   | "uptime"    => some .uptime
   | "cpu"       => some .cpu
   | "ram"       => some .ram
+  | "battery"   => some .battery
   | _        => none
 
 structure Config where
