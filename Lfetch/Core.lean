@@ -1,7 +1,7 @@
 import Lfetch.Config
 import Lfetch.Info.Dummy
 import Lfetch.Info.OS
-import Lfetch.Info.drive
+import Lfetch.Info.Drive
 import Lfetch.Info.User
 import Lfetch.Info.Shell
 import Lfetch.Info.Home
