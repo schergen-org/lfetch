@@ -37,17 +37,6 @@ The config uses JSON with two top-level sections:
 
 Only the `infos` listed in `groups` are printed, in that exact order.
 
-## Architecture
-
-The codebase is split into clear layers:
-
-- `Lfetch/Config/*`: config schema, defaults, and loading from `~/.config/lfetch/config.json`
-- `Lfetch/Domain/*`: core domain types (currently `InfoKey`)
-- `Lfetch/Runtime/*`: runtime wiring/dispatch (mapping `InfoKey -> fetch`)
-- `Lfetch/Info/*`: concrete info providers (`OS`, `CPU`, `RAM`, ...)
-
-This keeps configuration, domain modeling, and execution concerns separated.
-
 ### Available keys
 
 - `os`
@@ -88,7 +77,16 @@ This keeps configuration, domain modeling, and execution concerns separated.
 }
 ```
 
+## Architecture
 
+The codebase is split into clear layers:
+
+- `Lfetch/Config/*`: config schema, defaults, and loading from `~/.config/lfetch/config.json`
+- `Lfetch/Domain/*`: core domain types (currently `InfoKey`)
+- `Lfetch/Runtime/*`: runtime wiring/dispatch (mapping `InfoKey -> fetch`)
+- `Lfetch/Info/*`: concrete info providers (`OS`, `CPU`, `RAM`, ...)
+
+This keeps configuration, domain modeling, and execution concerns separated.
 
 
 ## Installation (Linux)
