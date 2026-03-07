@@ -28,14 +28,18 @@ What gets printed (and in what order) is controlled through a simple config file
 `lfetch` reads its configuration from:
 
 ```text
-$HOME/.config/lftech/config
+$HOME/.config/lfetch/config.json
 ```
 
-Put one entry per line. The order is arbitrary and determines the output order. You can list only a few items or all of them.
+The config uses JSON with two top-level sections:
+- `colors` (e.g. `primary`, `secondary`, `accent`, `muted`)
+- `groups` (optional `title` and an ordered list of `infos`)
+
+Only the `infos` listed in `groups` are printed, in that exact order.
 
 ### Available keys
 
-- `OS`
+- `os`
 - `drive`
 - `user`
 - `shell`
@@ -52,23 +56,37 @@ Put one entry per line. The order is arbitrary and determines the output order. 
 
 ### Example config
 
-```text
-user
-hostname
-OS
-kernel
-arch
-shell
-terminal
-uptime
-ram
-cpu
-battery
+```json
+{
+  "colors": {
+    "primary": "#FFFFFF",
+    "secondary": "#C0C0C0",
+    "accent": "#4FA3FF",
+    "muted": "#808080"
+  },
+  "groups": [
+    {
+      "title": null,
+      "infos": ["user", "hostname", "os"]
+    },
+    {
+      "title": "System",
+      "infos": ["kernel", "arch", "uptime", "ram", "cpu", "battery"]
+    }
+  ]
+}
 ```
 
-Only the keys present in the config are printed, in the same order as listed.
+## Architecture
 
+The codebase is split into clear layers:
 
+- `Lfetch/Config/*`: config schema, defaults, and loading from `~/.config/lfetch/config.json`
+- `Lfetch/Domain/*`: core domain types (currently `InfoKey`)
+- `Lfetch/Runtime/*`: runtime wiring/dispatch (mapping `InfoKey -> fetch`)
+- `Lfetch/Info/*`: concrete info providers (`OS`, `CPU`, `RAM`, ...)
+
+This keeps configuration, domain modeling, and execution concerns separated.
 
 
 ## Installation (Linux)
