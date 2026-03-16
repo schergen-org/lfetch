@@ -1,5 +1,15 @@
 {"version": "1.1.0",
  "packagesDir": ".lake/packages",
- "packages": [],
+ "packages":
+ [{"url": "git@github.com:schergen-org/Leansi.git",
+   "type": "git",
+   "subDir": null,
+   "scope": "",
+   "rev": "d32b7a927f370046c0a65e09982480a0272fbbf1",
+   "name": "leansi",
+   "manifestFile": "lake-manifest.json",
+   "inputRev": null,
+   "inherited": false,
+   "configFile": "lakefile.toml"}],
  "name": "lfetch",
  "lakeDir": ".lake"}
