@@ -2,9 +2,9 @@ import Std
 
 namespace Lfetch.Info.Home
 
-def fetch : IO String := do
+def fetch : IO (List String) := do
   match (← IO.getEnv "HOME") with
-  | some h => pure h
-  | none   => pure "unknown"
+  | some h => pure [h]
+  | none   => pure ["unknown"]
 
 end Lfetch.Info.Home
