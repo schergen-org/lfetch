@@ -1,8 +1,9 @@
 import Lfetch
+import leansi
 
 open Lfetch
 open leansi
-open leansi.doc
+open leansi.Doc
 
 def main : IO Unit := do
   let cfg ← loadConfig
