@@ -8,3 +8,7 @@ name = "Lfetch"
 [[lean_exe]]
 name = "lfetch"
 root = "Main"
+
+[[require]]
+name = "leansi"
+git = "git@github.com:schergen-org/Leansi.git"
