@@ -28,12 +28,12 @@ private def unameFallback : IO (Option String) := do
   catch _ =>
     pure none
 
-def fetch : IO String := do
+def fetch : IO (List String) := do
   match (← readEtcHostname) with
-  | some hn => pure hn
+  | some hn => pure [hn]
   | none =>
     match (← unameFallback) with
-    | some hn => pure hn
-    | none    => pure "unknown"
+    | some hn => pure [hn]
+    | none    => pure ["unknown"]
 
 end Lfetch.Info.Host

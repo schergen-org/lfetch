@@ -45,20 +45,20 @@ private def usageBar (pctStr : String) (barWidth : Nat := 10) : String :=
 
 private def formatEntry (e : DriveEntry) : String :=
   let bar := usageBar e.usePct
-  s!"  {e.mountPoint}  {bar}  {e.used}/{e.size}"
+  s!"{e.mountPoint}  {bar}  {e.used}/{e.size}"
 
 private def isRealFs (e : DriveEntry) : Bool :=
   let startsReal := e.filesystem.startsWith "/" || e.filesystem.startsWith "//"
   let notExcluded := !(excludedFsTypes.any (· == e.filesystem))
   startsReal && notExcluded
 
-def fetch : IO String := do
+def fetch : IO (List String) := do
   let result ← IO.Process.output {
     cmd  := "df"
     args := #["-h"]
   }
   if result.exitCode != 0 then
-    return "error running df"
+    return ["error running df"]
   let lines := result.stdout.splitOn "\n"
     |>.map trimLine
     |>.filter (· ≠ "")
@@ -67,8 +67,8 @@ def fetch : IO String := do
   let entries := dataLines.filterMap parseDfLine
   let realEntries := entries.filter isRealFs
   if realEntries.isEmpty then
-    return "no drives found"
+    return ["no drives found"]
   let formatted := realEntries.map formatEntry
-  return "\n" ++ String.intercalate "\n" formatted
+  return formatted
 
 end Lfetch.Info.Drive

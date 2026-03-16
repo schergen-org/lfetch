@@ -68,9 +68,11 @@ private def unameFallback : IO String := do
   catch _ =>
     pure "unknown"
 
-def fetch : IO String := do
+def fetch : IO (List String) := do
   match (← readOsRelease) with
-  | some os => pure os
-  | none    => unameFallback
+  | some os => pure [os]
+  | none    => do
+      let os ← unameFallback
+      pure [os]
 
 end Lfetch.Info.OS

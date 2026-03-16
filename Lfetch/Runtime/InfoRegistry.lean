@@ -17,7 +17,7 @@ import Lfetch.Info.Battery
 
 namespace Lfetch.Runtime.InfoRegistry
 
-def runInfo : Lfetch.InfoKey → IO String
+def runInfo : Lfetch.InfoKey → IO (List String)
   | .dummy => Lfetch.Info.Dummy.fetch
   | .os => Lfetch.Info.OS.fetch
   | .drive => Lfetch.Info.Drive.fetch

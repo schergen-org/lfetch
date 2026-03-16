@@ -26,7 +26,7 @@ private def parseMeminfoKiB (content : String) (keyWanted : String) : Option Nat
 private def kibToMiB (kib : Nat) : Nat :=
   kib / 1024
 
-def fetch : IO String := do
+def fetch : IO (List String) := do
   let path : System.FilePath := "/proc/meminfo"
   if (← path.pathExists) then
     let content ← IO.FS.readFile path
@@ -38,10 +38,10 @@ def fetch : IO String := do
       let totalMiB := kibToMiB totalKiB
       let usedMiB  := kibToMiB usedKiB
       let availMiB := kibToMiB availKiB
-      pure s!"{usedMiB} MiB used / {totalMiB} MiB (avail {availMiB} MiB)"
+      pure [s!"{usedMiB} MiB used / {totalMiB} MiB (avail {availMiB} MiB)"]
     | _, _ =>
-      pure "unknown"
+      pure ["unknown"]
   else
-    pure "unknown"
+    pure ["unknown"]
 
 end Lfetch.Info.RAM

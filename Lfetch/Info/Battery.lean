@@ -39,10 +39,10 @@ private def findBatteries : IO (List System.FilePath) := do
   let sorted := bats.map (·.path) |>.mergeSort (fun a b => a.toString < b.toString)
   return sorted
 
-def fetch : IO String := do
+def fetch : IO (List String) := do
   let batteries ← findBatteries
   if batteries.isEmpty then
-    return "No battery found"
+    return ["No battery found"]
   let mut lines : List String := []
   for bat in batteries do
     let name := bat.fileName.getD "BAT?"
@@ -52,11 +52,9 @@ def fetch : IO String := do
     | some pct =>
       let bar := batteryBar pct
       let icon := statusIcon status
-      lines := lines ++ [s!"  {name}  {bar}  {icon}"]
+      lines := lines ++ [s!"{name}  {bar}  {icon}"]
     | none =>
-      lines := lines ++ [s!"  {name}  unknown"]
-  if lines.length == 1 then
-    return (lines.head!).trimAsciiStart.toString
-  return "\n" ++ String.intercalate "\n" lines
+      lines := lines ++ [s!"{name}  unknown"]
+  return lines
 
 end Lfetch.Info.Battery
