@@ -37,6 +37,17 @@ The config uses JSON with two top-level sections:
 
 Only the `infos` listed in `groups` are printed, in that exact order.
 
+### Color roles
+
+The four configured colors have fixed rendering roles throughout the UI:
+
+- `primary`: box borders and group titles
+- `secondary`: info labels in the left column
+- `accent`: highlights and widgets, especially the `ProgressBar` used by `drive`, `ram`, and `battery`
+- `muted`: secondary details and placeholder/fallback values such as `unknown`
+
+This keeps the layout readable even when individual infos render richer `Leansi` documents instead of plain text.
+
 ### Available keys
 
 - `os`
@@ -84,9 +95,21 @@ The codebase is split into clear layers:
 - `Lfetch/Config/*`: config schema, defaults, and loading from `~/.config/lfetch/config.json`
 - `Lfetch/Domain/*`: core domain types (currently `InfoKey`)
 - `Lfetch/Runtime/*`: runtime wiring/dispatch (mapping `InfoKey -> fetch`)
-- `Lfetch/Info/*`: concrete info providers (`OS`, `CPU`, `RAM`, ...)
+- `Lfetch/Info/*`: concrete info providers (`OS`, `CPU`, `RAM`, ...), now returning `List (Doc Style)` instead of `List String`
+- `Lfetch/Output/*`: rendering and layout with `Leansi`
 
-This keeps configuration, domain modeling, and execution concerns separated.
+This keeps configuration, domain modeling, info collection, and terminal rendering separated.
+
+## Rendering
+
+`lfetch` now builds its output on top of **Leansi**. Each info provider returns structured `Doc` values, so rendering can preserve styling and widget composition until the final terminal output stage.
+
+Current conventions:
+
+- Simple infos such as `user`, `os`, `kernel`, or `cpu` return plain `Doc.text` lines.
+- Missing or unavailable values are rendered as muted italic docs.
+- `drive`, `ram`, and `battery` use `Leansi.progressBar`, with the configured `accent` color used for the active bar state and `muted` used for auxiliary text.
+- Group boxes and warning boxes are still rendered centrally in `Lfetch/Output/Render.lean`.
 
 
 ## Installation (Linux)
@@ -153,12 +176,3 @@ lfetch
 ```
 
 ---
-
-
-
-## Roadmap
-Planned improvements:
-
-- Better / nicer formatting of the output (intended to use the Lean library **Leansi**)
-- More customization options (e.g. configurable colors)
-- ASCII art support (neofetch-style)
