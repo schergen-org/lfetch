@@ -1,14 +1,13 @@
 import Std
-import Lfetch.Info.Common
 
 namespace Lfetch.Info.User
 
-def fetch (colors : Lfetch.Colors) : IO Lfetch.Info.InfoLines := do
+def fetch : IO (List String) := do
   match (← IO.getEnv "USER") with
-  | some u => pure [Lfetch.Info.textDoc u]
+  | some u => pure [u]
   | none =>
     match (← IO.getEnv "LOGNAME") with
-    | some u => pure [Lfetch.Info.textDoc u]
-    | none   => pure [Lfetch.Info.unknownDoc colors]
+    | some u => pure [u]
+    | none   => pure ["unknown"]
 
 end Lfetch.Info.User

@@ -1,14 +1,13 @@
 import Std
-import Lfetch.Info.Common
 
 namespace Lfetch.Info.Language
 
-def fetch (colors : Lfetch.Colors) : IO Lfetch.Info.InfoLines := do
+def fetch : IO (List String) := do
   match (← IO.getEnv "LANG") with
-  | some l => pure [Lfetch.Info.textDoc l]
+  | some l => pure [l]
   | none =>
     match (← IO.getEnv "LC_ALL") with
-    | some l => pure [Lfetch.Info.textDoc l]
-    | none   => pure [Lfetch.Info.unknownDoc colors]
+    | some l => pure [l]
+    | none   => pure ["unknown"]
 
 end Lfetch.Info.Language

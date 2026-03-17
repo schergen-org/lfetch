@@ -1,6 +1,5 @@
 import Lfetch.Core
 import Lfetch.Config.Types
-import Lfetch.Info.Common
 import leansi
 
 namespace Lfetch.Output
@@ -14,12 +13,46 @@ private structure Palette where
   accent : Style
   muted : Style
 
+private def hexDigitValue? (c : Char) : Option Nat :=
+  if '0' ≤ c && c ≤ '9' then
+    some (c.toNat - '0'.toNat)
+  else if 'a' ≤ c && c ≤ 'f' then
+    some (10 + (c.toNat - 'a'.toNat))
+  else if 'A' ≤ c && c ≤ 'F' then
+    some (10 + (c.toNat - 'A'.toNat))
+  else
+    none
+
+private def hexByteValue? (hi lo : Char) : Option Nat := do
+  let hi ← hexDigitValue? hi
+  let lo ← hexDigitValue? lo
+  pure (hi * 16 + lo)
+
+private def parseHexColor? (hex : String) : Option (Nat × Nat × Nat) :=
+  let normalized :=
+    if hex.startsWith "#" then
+      (hex.drop 1).toString
+    else
+      hex
+  match normalized.toList with
+  | [r1, r2, g1, g2, b1, b2] => do
+      let r ← hexByteValue? r1 r2
+      let g ← hexByteValue? g1 g2
+      let b ← hexByteValue? b1 b2
+      pure (r, g, b)
+  | _ => none
+
+private def styleFromHex (hex : String) (fallback : Style) : Style :=
+  match parseHexColor? hex with
+  | some (r, g, b) => Style.fg_rgb r g b
+  | none => fallback
+
 private def paletteOfConfig (cfg : Config) : Palette :=
   {
-    primary := Style.fg_hex cfg.colors.primary
-    secondary := Style.fg_hex cfg.colors.secondary
-    accent := Style.fg_hex cfg.colors.accent
-    muted := Style.fg_hex cfg.colors.muted
+    primary := styleFromHex cfg.colors.primary Style.bright_white
+    secondary := styleFromHex cfg.colors.secondary Style.bright_black
+    accent := styleFromHex cfg.colors.accent Style.bright_cyan
+    muted := styleFromHex cfg.colors.muted Style.grey
   }
 
 private def infoLabel : InfoKey → String
@@ -39,10 +72,19 @@ private def infoLabel : InfoKey → String
   | .ram => "RAM"
   | .battery => "Battery"
 
-private def linesDoc (palette : Palette) (lines : Lfetch.Info.InfoLines) : Doc Style :=
+private def valueLineDoc (palette : Palette) (line : String) : Doc Style :=
+  let trimmed := line.trimAscii.toString
+  if trimmed = "" then
+    Doc.empty
+  else if trimmed = "unknown" || trimmed = "No battery found" || trimmed = "no drives found" || trimmed = "error running df" then
+    ((Doc.text line).ann palette.muted) |> italic
+  else
+    Doc.text line
+
+private def linesDoc (palette : Palette) (lines : List String) : Doc Style :=
   match lines with
-  | [] => italic ((Doc.text "unknown").ann palette.muted)
-  | _ => Layout.vcat lines
+  | [] => valueLineDoc palette "unknown"
+  | _ => Layout.vcat (lines.map (valueLineDoc palette))
 
 private def labelDoc (palette : Palette) (k : InfoKey) : Doc Style :=
   ((Doc.text (infoLabel k)).ann palette.secondary) |> bold
@@ -59,12 +101,12 @@ private def labelColumnWidth (group : InfoGroup) : Nat :=
 private def visualWidth (text : String) : Nat :=
   text.length
 
-private def maxLineWidthOf (lines : Lfetch.Info.InfoLines) : Nat :=
+private def maxLineWidthOf (lines : List String) : Nat :=
   match lines with
   | [] => visualWidth "unknown"
-  | _ => lines.foldl (fun acc line => max acc (docVisualLength line)) 0
+  | _ => lines.foldl (fun acc line => max acc (visualWidth line)) 0
 
-private def preferredValueColumnWidth (results : List (InfoKey × Lfetch.Info.InfoLines)) : Nat :=
+private def preferredValueColumnWidth (results : List (InfoKey × List String)) : Nat :=
   let widest := results.foldl (fun acc (_, lines) => max acc (maxLineWidthOf lines)) 0
   max 12 widest
 
@@ -100,8 +142,8 @@ private def warningBox (palette : Palette) (maxWidth : Nat) (warnings : List Str
     maxWidth := maxWidth
   }
 
-private def renderGroup (cfg : Config) (palette : Palette) (maxWidth : Nat) (group : InfoGroup) : IO (Doc Style) := do
-  let results ← fetchAll cfg.colors group.infos
+private def renderGroup (palette : Palette) (maxWidth : Nat) (group : InfoGroup) : IO (Doc Style) := do
+  let results ← fetchAll group.infos
   let labelWidth := labelColumnWidth group
   let maxValueWidth := max 16 (maxWidth - 2 - 4 - labelWidth - 2)
   let valueWidth := min (preferredValueColumnWidth results) maxValueWidth
@@ -124,13 +166,13 @@ private def renderGroup (cfg : Config) (palette : Palette) (maxWidth : Nat) (gro
 def renderConfig (cfg : Config) : IO (Doc Style) := do
   let width ← terminalWidth
   let palette := paletteOfConfig cfg
-  let groupDocs ← cfg.groups.mapM (renderGroup cfg palette width)
+  let groupDocs ← cfg.groups.mapM (renderGroup palette width)
   pure <| Layout.vcat (intersperseBlankLines groupDocs)
 
 def renderReport (cfg : Config) (warnings : List String := []) : IO (Doc Style) := do
   let width ← terminalWidth
   let palette := paletteOfConfig cfg
-  let groupDocs ← cfg.groups.mapM (renderGroup cfg palette width)
+  let groupDocs ← cfg.groups.mapM (renderGroup palette width)
   let docs :=
     match warnings with
     | [] => groupDocs

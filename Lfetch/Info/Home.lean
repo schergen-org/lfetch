@@ -1,11 +1,10 @@
 import Std
-import Lfetch.Info.Common
 
 namespace Lfetch.Info.Home
 
-def fetch (colors : Lfetch.Colors) : IO Lfetch.Info.InfoLines := do
+def fetch : IO (List String) := do
   match (← IO.getEnv "HOME") with
-  | some h => pure [Lfetch.Info.textDoc h]
-  | none   => pure [Lfetch.Info.unknownDoc colors]
+  | some h => pure [h]
+  | none   => pure ["unknown"]
 
 end Lfetch.Info.Home

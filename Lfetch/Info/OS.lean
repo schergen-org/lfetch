@@ -1,5 +1,4 @@
 import Std
-import Lfetch.Info.Common
 
 namespace Lfetch.Info.OS
 
@@ -69,14 +68,11 @@ private def unameFallback : IO String := do
   catch _ =>
     pure "unknown"
 
-def fetch (colors : Lfetch.Colors) : IO Lfetch.Info.InfoLines := do
+def fetch : IO (List String) := do
   match (← readOsRelease) with
-  | some os => pure [Lfetch.Info.textDoc os]
+  | some os => pure [os]
   | none    => do
       let os ← unameFallback
-      if os = "unknown" then
-        pure [Lfetch.Info.unknownDoc colors]
-      else
-        pure [Lfetch.Info.textDoc os]
+      pure [os]
 
 end Lfetch.Info.OS

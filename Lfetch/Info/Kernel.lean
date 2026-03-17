@@ -1,20 +1,19 @@
 import Std
-import Lfetch.Info.Common
 
 namespace Lfetch.Info.Kernel
 
 private def trimLine (s : String) : String :=
   (s.trimAscii).toString
 
-def fetch (colors : Lfetch.Colors) : IO Lfetch.Info.InfoLines := do
+def fetch : IO (List String) := do
   try
     let out ← IO.Process.output { cmd := "uname", args := #["-sr"] }
     if out.exitCode = 0 then
       let k := trimLine out.stdout
-      pure [if k = "" then Lfetch.Info.unknownDoc colors else Lfetch.Info.textDoc k]
+      pure [if k = "" then "unknown" else k]
     else
-      pure [Lfetch.Info.unknownDoc colors]
+      pure ["unknown"]
   catch _ =>
-    pure [Lfetch.Info.unknownDoc colors]
+    pure ["unknown"]
 
 end Lfetch.Info.Kernel
