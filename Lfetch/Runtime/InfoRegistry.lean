@@ -1,4 +1,6 @@
 import Lfetch.Domain.InfoKey
+import Lfetch.Config.Types
+import Lfetch.Info.Common
 import Lfetch.Info.Dummy
 import Lfetch.Info.OS
 import Lfetch.Info.Drive
@@ -17,21 +19,21 @@ import Lfetch.Info.Battery
 
 namespace Lfetch.Runtime.InfoRegistry
 
-def runInfo : Lfetch.InfoKey → IO (List String)
-  | .dummy => Lfetch.Info.Dummy.fetch
-  | .os => Lfetch.Info.OS.fetch
-  | .drive => Lfetch.Info.Drive.fetch
-  | .user => Lfetch.Info.User.fetch
-  | .shell => Lfetch.Info.Shell.fetch
-  | .home => Lfetch.Info.Home.fetch
-  | .hostname => Lfetch.Info.Host.fetch
-  | .kernel => Lfetch.Info.Kernel.fetch
-  | .arch => Lfetch.Info.Arch.fetch
-  | .terminal => Lfetch.Info.Terminal.fetch
-  | .locale => Lfetch.Info.Language.fetch
-  | .uptime => Lfetch.Info.Uptime.fetch
-  | .cpu => Lfetch.Info.CPU.fetch
-  | .ram => Lfetch.Info.RAM.fetch
-  | .battery => Lfetch.Info.Battery.fetch
+def runInfo (colors : Lfetch.Colors) : Lfetch.InfoKey → IO Lfetch.Info.InfoLines
+  | .dummy => Lfetch.Info.Dummy.fetch colors
+  | .os => Lfetch.Info.OS.fetch colors
+  | .drive => Lfetch.Info.Drive.fetch colors
+  | .user => Lfetch.Info.User.fetch colors
+  | .shell => Lfetch.Info.Shell.fetch colors
+  | .home => Lfetch.Info.Home.fetch colors
+  | .hostname => Lfetch.Info.Host.fetch colors
+  | .kernel => Lfetch.Info.Kernel.fetch colors
+  | .arch => Lfetch.Info.Arch.fetch colors
+  | .terminal => Lfetch.Info.Terminal.fetch colors
+  | .locale => Lfetch.Info.Language.fetch colors
+  | .uptime => Lfetch.Info.Uptime.fetch colors
+  | .cpu => Lfetch.Info.CPU.fetch colors
+  | .ram => Lfetch.Info.RAM.fetch colors
+  | .battery => Lfetch.Info.Battery.fetch colors
 
 end Lfetch.Runtime.InfoRegistry

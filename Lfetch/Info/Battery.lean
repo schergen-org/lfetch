@@ -1,15 +1,9 @@
+import Lfetch.Info.Common
+
 namespace Lfetch.Info.Battery
 
 private def trimLine (s : String) : String :=
   (s.trimAscii).toString
-
-private def batteryBar (pct : Nat) (barWidth : Nat := 10) : String :=
-  let clamped := min pct 100
-  let filled := (clamped * barWidth + 50) / 100
-  let empty  := barWidth - filled
-  let bar := String.ofList (List.replicate filled '█') ++
-             String.ofList (List.replicate empty  '░')
-  s!"[{bar}] {clamped}%"
 
 private def readBatteryCapacity (batPath : System.FilePath) : IO (Option Nat) := do
   let capFile := batPath / "capacity"
@@ -39,22 +33,28 @@ private def findBatteries : IO (List System.FilePath) := do
   let sorted := bats.map (·.path) |>.mergeSort (fun a b => a.toString < b.toString)
   return sorted
 
-def fetch : IO (List String) := do
+private def formatEntry (colors : Lfetch.Colors) (name : String) (pct : Nat) (status : String) : Lfetch.Info.InfoDoc :=
+  let bar := Lfetch.Info.accentProgressBar colors pct
+  let state := Lfetch.Info.mutedDoc colors (statusIcon status)
+  Lfetch.Info.textDoc name ++ Lfetch.Info.textDoc "  " ++ bar ++ Lfetch.Info.textDoc "  " ++ state
+
+private def formatUnknownEntry (colors : Lfetch.Colors) (name : String) : Lfetch.Info.InfoDoc :=
+  Lfetch.Info.textDoc name ++ Lfetch.Info.textDoc "  " ++ Lfetch.Info.mutedItalicDoc colors "unknown"
+
+def fetch (colors : Lfetch.Colors) : IO Lfetch.Info.InfoLines := do
   let batteries ← findBatteries
   if batteries.isEmpty then
-    return ["No battery found"]
-  let mut lines : List String := []
+    return [Lfetch.Info.mutedItalicDoc colors "No battery found"]
+  let mut lines : Lfetch.Info.InfoLines := []
   for bat in batteries do
     let name := bat.fileName.getD "BAT?"
     let cap ← readBatteryCapacity bat
     let status ← readBatteryStatus bat
     match cap with
     | some pct =>
-      let bar := batteryBar pct
-      let icon := statusIcon status
-      lines := lines ++ [s!"{name}  {bar}  {icon}"]
+      lines := lines ++ [formatEntry colors name pct status]
     | none =>
-      lines := lines ++ [s!"{name}  unknown"]
+      lines := lines ++ [formatUnknownEntry colors name]
   return lines
 
 end Lfetch.Info.Battery

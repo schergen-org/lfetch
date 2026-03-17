@@ -1,10 +1,12 @@
 import Lfetch.Runtime.InfoRegistry
+import Lfetch.Config.Types
+import Lfetch.Info.Common
 
 namespace Lfetch
 
-def fetchAll (keys : List InfoKey) : IO (List (InfoKey × List String)) := do
+def fetchAll (colors : Colors) (keys : List InfoKey) : IO (List (InfoKey × Lfetch.Info.InfoLines)) := do
   keys.mapM (fun k => do
-    let v ← Runtime.InfoRegistry.runInfo k
+    let v ← Runtime.InfoRegistry.runInfo colors k
     pure (k, v)
   )
 
