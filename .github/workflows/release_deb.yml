@@ -1,0 +1,84 @@
+name: Release Debian Package
+
+on:
+  push:
+    tags:
+      - "*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Build Lean project
+        uses: leanprover/lean-action@v1
+
+      - name: Build lfetch binary
+        run: lake build lfetch
+
+      - name: Create Debian package
+        id: package
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+          else
+            VERSION="0.0.0~git${GITHUB_SHA::7}"
+          fi
+
+          ARCH="$(dpkg --print-architecture)"
+          PKG_ROOT="pkgroot"
+          BIN_SRC=".lake/build/bin/lfetch"
+
+          if [[ ! -x "$BIN_SRC" ]]; then
+            echo "Expected binary not found at $BIN_SRC"
+            exit 1
+          fi
+
+          mkdir -p "$PKG_ROOT/DEBIAN"
+          mkdir -p "$PKG_ROOT/usr/bin"
+
+          install -m 0755 "$BIN_SRC" "$PKG_ROOT/usr/bin/lfetch"
+
+          cat > "$PKG_ROOT/DEBIAN/control" <<EOF
+          Package: lfetch
+          Version: ${VERSION}
+          Section: utils
+          Priority: optional
+          Architecture: ${ARCH}
+          Maintainer: schergen-org <noreply@github.com>
+          Depends: coreutils
+          Description: Simple system information tool written in Lean 4
+           lfetch prints concise system information in a neofetch-style layout.
+          EOF
+
+          DEB_FILE="lfetch_${VERSION}_${ARCH}.deb"
+          dpkg-deb --build --root-owner-group "$PKG_ROOT" "$DEB_FILE"
+
+          echo "deb_file=$DEB_FILE" >> "$GITHUB_OUTPUT"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: lfetch-${{ github.ref_name }}
+          path: |
+            ${{ steps.package.outputs.deb_file }}
+            .lake/build/bin/lfetch
+          if-no-files-found: error
+
+      - name: Publish GitHub release assets
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ${{ steps.package.outputs.deb_file }}
+            .lake/build/bin/lfetch

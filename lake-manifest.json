@@ -1,7 +1,7 @@
 {"version": "1.1.0",
  "packagesDir": ".lake/packages",
  "packages":
- [{"url": "git@github.com:schergen-org/Leansi.git",
+ [{"url": "https://github.com/schergen-org/Leansi.git",
    "type": "git",
    "subDir": null,
    "scope": "",

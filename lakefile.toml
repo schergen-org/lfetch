@@ -11,4 +11,4 @@ root = "Main"
 
 [[require]]
 name = "leansi"
-git = "git@github.com:schergen-org/Leansi.git"
+git = "https://github.com/schergen-org/Leansi.git"
