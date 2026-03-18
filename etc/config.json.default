@@ -1,0 +1,18 @@
+{
+  "colors": {
+    "primary": "#FFFFFF",
+    "secondary": "#C0C0C0",
+    "accent": "#4FA3FF",
+    "muted": "#808080"
+  },
+  "groups": [
+    {
+      "title": null,
+      "infos": ["user", "hostname", "os"]
+    },
+    {
+      "title": "System",
+      "infos": ["kernel", "arch", "uptime", "ram", "cpu", "battery"]
+    }
+  ]
+}
