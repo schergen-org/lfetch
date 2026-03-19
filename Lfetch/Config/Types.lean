@@ -9,6 +9,9 @@ structure Colors where
   secondary : String
   accent : String
   muted : String
+  tresholdLow: String
+  tresholdMid: String
+  tresholdHigh: String
   deriving Repr, Inhabited, FromJson, ToJson
 
 structure InfoGroup where
