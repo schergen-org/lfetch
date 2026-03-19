@@ -33,10 +33,10 @@ private def findBatteries : IO (List System.FilePath) := do
   let sorted := bats.map (·.path) |>.mergeSort (fun a b => a.toString < b.toString)
   return sorted
 
-private def formatEntry (colors : Lfetch.Colors) (name : String) (pct : Nat) (status : String) : Lfetch.Info.InfoDoc :=
-  let bar := Lfetch.Info.ProgressBarWithTresholds colors pct false
+private def formatEntry (colors : Lfetch.Colors) (name : String) (pct : Nat) (status : String) : Lfetch.Info.InfoLines :=
+  let bar := Lfetch.Info.ProgressBarWithTresholds colors pct false 20
   let state := Lfetch.Info.mutedDoc colors (statusIcon status)
-  Lfetch.Info.textDoc name ++ Lfetch.Info.textDoc "  " ++ bar ++ Lfetch.Info.textDoc "  " ++ state
+  [Lfetch.Info.textDoc name ++ Lfetch.Info.textDoc "  " ++ state, bar]
 
 private def formatUnknownEntry (colors : Lfetch.Colors) (name : String) : Lfetch.Info.InfoDoc :=
   Lfetch.Info.textDoc name ++ Lfetch.Info.textDoc "  " ++ Lfetch.Info.mutedItalicDoc colors "unknown"
@@ -52,7 +52,7 @@ def fetch (colors : Lfetch.Colors) : IO Lfetch.Info.InfoLines := do
     let status ← readBatteryStatus bat
     match cap with
     | some pct =>
-      lines := lines ++ [formatEntry colors name pct status]
+      lines := lines ++ (formatEntry colors name pct status)
     | none =>
       lines := lines ++ [formatUnknownEntry colors name]
   return lines
