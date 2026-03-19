@@ -16,6 +16,7 @@ structure Colors where
 
 structure InfoGroup where
   title : Option String := none
+  padding : Option Nat := none
   infos : List InfoKey
   deriving Repr, Inhabited, FromJson, ToJson
 

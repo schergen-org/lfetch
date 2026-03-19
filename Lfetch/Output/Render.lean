@@ -120,12 +120,22 @@ private def renderGroup (cfg : Config) (palette : Palette) (maxWidth : Nat) (gro
   let labelWidth := labelColumnWidth group
   let maxValueWidth := max 16 (maxWidth - 2 - 4 - labelWidth - 2)
   let valueWidth := min (preferredValueColumnWidth results) maxValueWidth
-  let rows := results.map fun (key, lines) =>
-    Layout.columns [labelWidth, valueWidth] 2
-      [ labelDoc palette key
-      , linesDoc palette lines
-      ]
-      [Alignment.left, Alignment.left]
+  let baseRows := results.map fun (key, lines) =>
+  Layout.columns [labelWidth, valueWidth] 2
+    [ labelDoc palette key
+    , linesDoc palette lines
+    ]
+    [Alignment.left, Alignment.left]
+  let rows :=
+    match group.padding with
+    | none => baseRows
+    | some p =>
+      let spacer := List.replicate p (Doc.empty)
+      baseRows.foldr (fun row acc =>
+        match acc with
+        | [] => [row]  -- last Element (no Spacer after that)
+        | _  => row :: spacer ++ acc
+      ) []
   pure <| box (Layout.vcat rows) {
     title := groupTitleDoc? palette group.title
     chars := roundedBoxChars
