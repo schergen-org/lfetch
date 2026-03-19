@@ -1,12 +1,15 @@
+[![Lean Action CI](https://github.com/schergen-org/lfetch/actions/workflows/lean_action_ci.yml/badge.svg)](https://github.com/schergen-org/lfetch/actions/workflows/lean_action_ci.yml)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+<a href="https://github.com/schergen-org/lfetch/releases/tag/v0.1.0" alt="Version 0.1.0">
+        <img src="https://img.shields.io/badge/version-0.1.0-blue" /></a>
+        
 <p align="center">This program serves as a sample implementation using <a href="https://github.com/schergen-org/Leansi">Leansi</a></p>
 
 <p align="center"><img width="323" height="216" alt="Lfetch2" src="https://github.com/user-attachments/assets/ea7e209d-eaa1-492e-8dd2-631973617769" /></p>
 
 
-[![Lean Action CI](https://github.com/schergen-org/lfetch/actions/workflows/lean_action_ci.yml/badge.svg)](https://github.com/schergen-org/lfetch/actions/workflows/lean_action_ci.yml)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-<a href="https://github.com/schergen-org/lfetch/releases/tag/v0.1.0" alt="Version 0.1.0">
-        <img src="https://img.shields.io/badge/version-0.1.0-blue" /></a>
+> [!NOTE]  
+> This library was created as part of the “Funktionale Programmierung in Lean” module as an examination requirement at the University of Applied Sciences Mittelhessen.
 
 <h1 align="center">lfetch</h1>
 <p align="center">A simple system information tool written in LEAN 4</p><br>
