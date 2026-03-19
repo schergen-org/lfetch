@@ -1,13 +1,14 @@
 import Std
+import Lfetch.Info.Common
 
 namespace Lfetch.Info.Terminal
 
-def fetch : IO (List String) := do
+def fetch (colors : Lfetch.Colors) : IO Lfetch.Info.InfoLines := do
   match (← IO.getEnv "TERM") with
-  | some t => pure [t]
+  | some t => pure [Lfetch.Info.textDoc t]
   | none =>
     match (← IO.getEnv "TERM_PROGRAM") with
-    | some t => pure [t]
-    | none   => pure ["unknown"]
+    | some t => pure [Lfetch.Info.textDoc t]
+    | none   => pure [Lfetch.Info.unknownDoc colors]
 
 end Lfetch.Info.Terminal
