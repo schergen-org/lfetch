@@ -62,7 +62,7 @@ Load behavior in the current code:
 
 The config schema is defined in [`Lfetch/Config/Types.lean`](/home/benjamin/Repos/lfetch/Lfetch/Config/Types.lean).
 
-Important detail: the field names are spelled `tresholdLow`, `tresholdMid`, and `tresholdHigh` in the current codebase. The README keeps that spelling intentionally because that is what the JSON decoder expects.
+The JSON decoder expects the correctly spelled field names `thresholdLow`, `thresholdMid`, and `thresholdHigh`.
 
 ### Color Fields
 
@@ -72,7 +72,7 @@ The configured colors are used as follows:
 - `secondary`: info labels and parts of the ASCII logo
 - `accent`: parts of the ASCII logo and the warning box title/border
 - `muted`: fallback values such as `unknown` and secondary detail text
-- `tresholdLow`, `tresholdMid`, `tresholdHigh`: threshold colors for progress bars
+- `thresholdLow`, `thresholdMid`, `thresholdHigh`: threshold colors for progress bars
 
 Progress bars are used by:
 
@@ -103,9 +103,9 @@ The built-in default config from [`Lfetch/Config/Defaults.lean`](/home/benjamin/
     "secondary": "#fab387",
     "accent": "#89b4fa",
     "muted": "#585b70",
-    "tresholdLow": "#a6e3a1",
-    "tresholdMid": "#f9e2af",
-    "tresholdHigh": "#f38ba8"
+    "thresholdLow": "#a6e3a1",
+    "thresholdMid": "#f9e2af",
+    "thresholdHigh": "#f38ba8"
   },
   "groups": [
     {

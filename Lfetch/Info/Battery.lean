@@ -34,7 +34,7 @@ private def findBatteries : IO (List System.FilePath) := do
   return sorted
 
 private def formatEntry (colors : Lfetch.Colors) (name : String) (pct : Nat) (status : String) : Lfetch.Info.InfoLines :=
-  let bar := Lfetch.Info.ProgressBarWithTresholds colors pct false 20
+  let bar := Lfetch.Info.ProgressBarWithThresholds colors pct false 20
   let state := Lfetch.Info.mutedDoc colors (statusIcon status)
   [Lfetch.Info.textDoc name ++ Lfetch.Info.textDoc "  " ++ state, bar]
 

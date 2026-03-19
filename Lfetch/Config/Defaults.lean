@@ -8,9 +8,9 @@ def defaultColors : Colors :=
     secondary := "#fab387"
     accent := "#89b4fa"
     muted := "#585b70"
-    tresholdLow := "#a6e3a1"
-    tresholdMid := "#f9e2af"
-    tresholdHigh := "#f38ba8"
+    thresholdLow := "#a6e3a1"
+    thresholdMid := "#f9e2af"
+    thresholdHigh := "#f38ba8"
   }
 
 def defaultConfig : Config :=

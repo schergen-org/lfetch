@@ -31,21 +31,21 @@ def clampPercent (pct : Nat) : Fin 101 :=
   let clamped := min pct 100
   ⟨clamped, Nat.lt_succ_of_le (Nat.min_le_right pct 100)⟩
 
-def ProgressBarWithTresholds (colors : Colors) (pct : Nat) (growing : Bool) (width : Nat := 10) : InfoDoc :=
-  let tresholds := if growing then
-    [{ upperBound := 33, color := (Style.fg_hex colors.tresholdLow).foreground.getD ColorLevel.none }
-    , { upperBound := 66, color := (Style.fg_hex colors.tresholdMid).foreground.getD ColorLevel.none }
-    , { upperBound := 100, color := (Style.fg_hex colors.tresholdHigh).foreground.getD ColorLevel.none }
+def ProgressBarWithThresholds (colors : Colors) (pct : Nat) (growing : Bool) (width : Nat := 10) : InfoDoc :=
+  let thresholds := if growing then
+    [{ upperBound := 33, color := (Style.fg_hex colors.thresholdLow).foreground.getD ColorLevel.none }
+    , { upperBound := 66, color := (Style.fg_hex colors.thresholdMid).foreground.getD ColorLevel.none }
+    , { upperBound := 100, color := (Style.fg_hex colors.thresholdHigh).foreground.getD ColorLevel.none }
     ]
   else
-    [{ upperBound := 33, color := (Style.fg_hex colors.tresholdHigh).foreground.getD ColorLevel.none }
-    , { upperBound := 66, color := (Style.fg_hex colors.tresholdMid).foreground.getD ColorLevel.none }
-    , { upperBound := 100, color := (Style.fg_hex colors.tresholdLow).foreground.getD ColorLevel.none }
+    [{ upperBound := 33, color := (Style.fg_hex colors.thresholdHigh).foreground.getD ColorLevel.none }
+    , { upperBound := 66, color := (Style.fg_hex colors.thresholdMid).foreground.getD ColorLevel.none }
+    , { upperBound := 100, color := (Style.fg_hex colors.thresholdLow).foreground.getD ColorLevel.none }
     ]
 
   progressBar
     { width := width
-      thresholds := tresholds
+      thresholds := thresholds
       defaultColor := accentColorLevel colors
     }
     (clampPercent pct)

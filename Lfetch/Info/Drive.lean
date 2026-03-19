@@ -41,7 +41,7 @@ private def parsePct (pctStr : String) : Nat :=
   ((pctStr.replace "%" "").trimAscii.toString).toNat?.getD 0
 
 private def formatEntry (colors : Lfetch.Colors) (e : DriveEntry) : Lfetch.Info.InfoLines :=
-  let bar := Lfetch.Info.ProgressBarWithTresholds colors (parsePct e.usePct) true 20
+  let bar := Lfetch.Info.ProgressBarWithThresholds colors (parsePct e.usePct) true 20
   let details := Lfetch.Info.mutedDoc colors s!"{e.used}/{e.size}"
   [Lfetch.Info.textDoc e.mountPoint, details, bar]
 

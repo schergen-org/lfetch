@@ -40,7 +40,7 @@ def format2 (x : Float) : String :=
   s!"{intPart}.{if fracPart < 10 then "0" else ""}{fracPart}"
 
 private def formatUsage (colors : Lfetch.Colors) (usedMiB totalMiB : Float) : Lfetch.Info.InfoLines :=
-  let bar := Lfetch.Info.ProgressBarWithTresholds colors (usagePercent usedMiB totalMiB) true 20
+  let bar := Lfetch.Info.ProgressBarWithThresholds colors (usagePercent usedMiB totalMiB) true 20
   let details := Lfetch.Info.mutedDoc colors s!"{format2 usedMiB} GiB / {format2 totalMiB} GiB"
   [details, bar]
 
