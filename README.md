@@ -167,10 +167,6 @@ Fallback behavior varies per provider:
 - [`Lfetch/Info`](/home/benjamin/Repos/lfetch/Lfetch/Info) contains the individual info providers
 - [`Lfetch/Output`](/home/benjamin/Repos/lfetch/Lfetch/Output) contains report rendering
 
-## Distribution
-
-- Prebuilt release assets: [blocked] not verifiable from repository contents. This README therefore documents source builds only.
-
 ## License
 
 This repository ships the GNU General Public License v3.0 in [`LICENSE`](/home/benjamin/Repos/lfetch/LICENSE).
