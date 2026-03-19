@@ -65,7 +65,6 @@ Load behavior in the current code:
 
 - if the file does not exist, `lfetch` silently uses the built-in default config
 - if JSON parsing fails, `lfetch` falls back to the default config and renders a warning box
-- if JSON shape decoding fails, `lfetch` falls back to the default config and renders a warning box
 
 ### Color Fields
 
