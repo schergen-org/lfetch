@@ -1,4 +1,5 @@
 import Lfetch.Info.Common
+import leansi.Doc.Type
 
 namespace Lfetch.Info.Drive
 
@@ -39,10 +40,10 @@ private def parseDfLine (line : String) : Option DriveEntry :=
 private def parsePct (pctStr : String) : Nat :=
   ((pctStr.replace "%" "").trimAscii.toString).toNat?.getD 0
 
-private def formatEntry (colors : Lfetch.Colors) (e : DriveEntry) : Lfetch.Info.InfoDoc :=
-  let bar := Lfetch.Info.ProgressBarWithTresholds colors (parsePct e.usePct) true
+private def formatEntry (colors : Lfetch.Colors) (e : DriveEntry) : Lfetch.Info.InfoLines :=
+  let bar := Lfetch.Info.ProgressBarWithTresholds colors (parsePct e.usePct) true 20
   let details := Lfetch.Info.mutedDoc colors s!"{e.used}/{e.size}"
-  Lfetch.Info.textDoc e.mountPoint ++ Lfetch.Info.textDoc "  " ++ bar ++ Lfetch.Info.textDoc "  " ++ details
+  [Lfetch.Info.textDoc e.mountPoint, details, bar]
 
 private def isRealFs (e : DriveEntry) : Bool :=
   let startsReal := e.filesystem.startsWith "/" || e.filesystem.startsWith "//"
@@ -55,19 +56,34 @@ def fetch (colors : Lfetch.Colors) : IO Lfetch.Info.InfoLines := do
       cmd  := "df"
       args := #["-h"]
     }
+
     if result.exitCode != 0 then
       return [Lfetch.Info.mutedItalicDoc colors "error running df"]
-    let lines := result.stdout.splitOn "\n"
+
+    let lines :=
+      result.stdout.splitOn "\n"
       |>.map trimLine
       |>.filter (· ≠ "")
 
     let dataLines := lines.drop 1
     let entries := dataLines.filterMap parseDfLine
     let realEntries := entries.filter isRealFs
+
     if realEntries.isEmpty then
       return [Lfetch.Info.mutedItalicDoc colors "no drives found"]
-    return realEntries.map (formatEntry colors)
+
+    let formatted : Lfetch.Info.InfoLines :=
+      (realEntries.map (formatEntry colors)).foldr
+        (fun docs acc =>
+          if acc.isEmpty then
+            docs
+          else
+            docs ++ [leansi.Doc.empty] ++ acc)
+        []
+
+    return formatted
+
   catch _ =>
-    pure [Lfetch.Info.mutedItalicDoc colors "error running df"]
+    return [Lfetch.Info.mutedItalicDoc colors "error running df"]
 
 end Lfetch.Info.Drive
