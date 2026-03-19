@@ -1,4 +1,5 @@
-<p align="center"><img width="671" height="193" alt="2026-02-25_13-26-32" src="https://github.com/user-attachments/assets/8d211559-387c-49f0-9980-46c4ab6b2103" /></p>
+<p align="center"><img width="323" height="216" alt="Lfetch2" src="https://github.com/user-attachments/assets/ea7e209d-eaa1-492e-8dd2-631973617769" /></p>
+
 
 [![Lean Action CI](https://github.com/schergen-org/lfetch/actions/workflows/lean_action_ci.yml/badge.svg)](https://github.com/schergen-org/lfetch/actions/workflows/lean_action_ci.yml)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
@@ -9,19 +10,31 @@
 <p align="center">A simple system information tool written in LEAN 4</p><br>
 <sup><p align="center">Functionally inspired by <a href="https://github.com/dylanaraps/pfetch">pfetch</a>, <a href="https://github.com/dylanaraps/neofetch">neofetch</a>, ...</p></sup><br>
 
-<img width="490" height="302" alt="2026-02-25_13-43-38" src="https://github.com/user-attachments/assets/510591db-4058-4832-9157-b05b66c6bfb9" align="right" />
+<img width="600" alt="Lfetch" src="https://github.com/user-attachments/assets/32eaaff2-a52e-445d-b175-afe110605a42" align="right" />
 
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
 `lfetch` is a small “fetch”-style system information tool, similar in spirit to **neofetch**, but written in **Lean 4**. It prints a set of basic system details in the terminal.
 
 What gets printed (and in what order) is controlled through a simple config file.
 
+
 <br>
 <br>
 <br>
 <br>
 <br>
 <br>
+<br>
+<br>
+
 
 ## Current Scope
 
