@@ -166,7 +166,7 @@ def printReport (cfg : Config) (warnings : List String := []) : IO Unit := do
       , Doc.text "|______|______|                " |> fg_hex cfg.colors.secondary |> bold
       , Doc.empty
       , Doc.text "lfetch" |> fg_hex cfg.colors.accent |> bold
-      , Doc.text "System fetch built with Leansi" |> fg_hex cfg.colors.muted |> italic
+      , Doc.text "System fetch built with Lean" |> fg_hex cfg.colors.muted |> italic
       ]
   leansi.println (leansi.Layout.columns [30, cols-31] 1 [logoDoc, (← renderReport cfg warnings)] [] true)
 
