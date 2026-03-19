@@ -53,7 +53,7 @@ The rendered output consists of:
 The repository is configured for:
 
 - Lean toolchain `leanprover/lean4:v4.28.0`
-- package version `0.1.0`
+- package version `1.0.0`
 - executable target `lfetch`
 - library target `Lfetch`
 
