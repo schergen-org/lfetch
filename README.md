@@ -5,9 +5,6 @@
         
 <p align="center">This program serves as a sample implementation using <a href="https://github.com/schergen-org/Leansi">Leansi</a></p>
 
-<p align="center"><img width="323" height="216" alt="Lfetch2" src="https://github.com/user-attachments/assets/ea7e209d-eaa1-492e-8dd2-631973617769" /></p>
-
-
 > [!NOTE]  
 > This programm was created as part of the “Funktionale Programmierung in Lean” module as an examination requirement at the University of Applied Sciences Mittelhessen.
 
