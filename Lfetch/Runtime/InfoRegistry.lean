@@ -2,6 +2,7 @@ import Lfetch.Domain.InfoKey
 import Lfetch.Config.Types
 import Lfetch.Info.Common
 import Lfetch.Info.Dummy
+import Lfetch.Info.Palette
 import Lfetch.Info.OS
 import Lfetch.Info.Drive
 import Lfetch.Info.User
@@ -21,6 +22,7 @@ namespace Lfetch.Runtime.InfoRegistry
 
 def runInfo (colors : Lfetch.Colors) : Lfetch.InfoKey → IO Lfetch.Info.InfoLines
   | .dummy => Lfetch.Info.Dummy.fetch colors
+  | .palette => Lfetch.Info.Palette.fetch colors
   | .os => Lfetch.Info.OS.fetch colors
   | .drive => Lfetch.Info.Drive.fetch colors
   | .user => Lfetch.Info.User.fetch colors

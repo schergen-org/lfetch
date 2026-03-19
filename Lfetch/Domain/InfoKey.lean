@@ -6,6 +6,7 @@ open Lean
 
 inductive InfoKey
   | dummy
+  | palette
   | os
   | drive
   | user
@@ -24,6 +25,7 @@ inductive InfoKey
 
 def InfoKey.toString : InfoKey → String
   | .dummy => "dummy"
+  | .palette => "palette"
   | .os => "os"
   | .drive => "drive"
   | .user => "user"
@@ -45,6 +47,7 @@ private def trimLine (s : String) : String :=
 def InfoKey.parse (s : String) : Option InfoKey :=
   match (trimLine s).toLower with
   | "dummy" => some .dummy
+  | "palette" => some .palette
   | "os" => some .os
   | "drive" => some .drive
   | "user" => some .user

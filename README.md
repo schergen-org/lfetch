@@ -53,6 +53,7 @@ This keeps the layout readable even when individual infos render richer `Leansi`
 - `os`
 - `drive`
 - `user`
+- `palette`
 - `shell`
 - `home`
 - `hostname`
