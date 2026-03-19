@@ -60,33 +60,7 @@ Load behavior in the current code:
 
 ### JSON Shape
 
-The config schema is defined in [`Lfetch/Config/Types.lean`](/home/benjamin/Repos/lfetch/Lfetch/Config/Types.lean):
-
-```json
-{
-  "colors": {
-    "primary": "#94e2d5",
-    "secondary": "#fab387",
-    "accent": "#89b4fa",
-    "muted": "#585b70",
-    "tresholdLow": "#a6e3a1",
-    "tresholdMid": "#f9e2af",
-    "tresholdHigh": "#f38ba8"
-  },
-  "groups": [
-    {
-      "title": "Overview",
-      "padding": null,
-      "infos": ["user", "os", "kernel", "uptime", "shell", "cpu", "arch", "palette"]
-    },
-    {
-      "title": "Resources",
-      "padding": 1,
-      "infos": ["ram", "battery", "drive"]
-    }
-  ]
-}
-```
+The config schema is defined in [`Lfetch/Config/Types.lean`](/home/benjamin/Repos/lfetch/Lfetch/Config/Types.lean).
 
 Important detail: the field names are spelled `tresholdLow`, `tresholdMid`, and `tresholdHigh` in the current codebase. The README keeps that spelling intentionally because that is what the JSON decoder expects.
 
