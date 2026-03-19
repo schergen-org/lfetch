@@ -20,9 +20,6 @@ jobs:
       - name: Build Lean project
         uses: leanprover/lean-action@v1
 
-      - name: Build lfetch binary
-        run: lake build lfetch
-
       - name: Create Debian package
         id: package
         shell: bash
@@ -35,39 +32,10 @@ jobs:
             VERSION="0.0.0~git${GITHUB_SHA::7}"
           fi
 
+          ./packaging/scripts/build-deb.sh "$VERSION"
+
           ARCH="$(dpkg --print-architecture)"
-          PKG_ROOT="pkgroot"
-          BIN_SRC=".lake/build/bin/lfetch"
-
-          if [[ ! -x "$BIN_SRC" ]]; then
-            echo "Expected binary not found at $BIN_SRC"
-            exit 1
-          fi
-
-          mkdir -p "$PKG_ROOT/DEBIAN"
-          mkdir -p "$PKG_ROOT/usr/bin"
-          mkdir -p "$PKG_ROOT/usr/share/lfetch"
-
-          install -m 0755 "$BIN_SRC" "$PKG_ROOT/usr/bin/lfetch"
-          install -m 0644 etc/config.json.default "$PKG_ROOT/usr/share/lfetch/config.json.default"
-
-          cat > "$PKG_ROOT/DEBIAN/control" <<EOF
-          Package: lfetch
-          Version: ${VERSION}
-          Section: utils
-          Priority: optional
-          Architecture: ${ARCH}
-          Maintainer: schergen-org <noreply@github.com>
-          Depends: coreutils
-          Description: Simple system information tool written in Lean 4
-           lfetch prints concise system information in a neofetch-style layout.
-           Configure via ~/.config/lfetch/config.json
-           EOF
-
-          install -m 0755 debian/postinst "$PKG_ROOT/DEBIAN/postinst"
-
-          DEB_FILE="lfetch_${VERSION}_${ARCH}.deb"
-          dpkg-deb --build --root-owner-group "$PKG_ROOT" "$DEB_FILE"
+          DEB_FILE="packaging/dist/deb/lfetch_${VERSION}_${ARCH}/lfetch_${VERSION}_${ARCH}.deb"
 
           echo "deb_file=$DEB_FILE" >> "$GITHUB_OUTPUT"
 

@@ -420,5 +420,6 @@ FodyWeavers.xsd
 
 # Build artifacts and temporary directories
 /pkgroot/
+/packaging/dist/
 *.deb
 lfetch_*
