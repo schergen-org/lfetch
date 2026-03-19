@@ -149,9 +149,25 @@ def renderReport (cfg : Config) (warnings : List String := []) : IO (Doc Style) 
   pure <| Layout.vcat (intersperseBlankLines docs)
 
 def printConfig (cfg : Config) : IO Unit := do
-  leansi.println (← renderConfig cfg)
+  leansi.println ((← renderConfig cfg))
 
 def printReport (cfg : Config) (warnings : List String := []) : IO Unit := do
-  leansi.println (← renderReport cfg warnings)
+  let dims <- leansi.getTerminalDimensions
+  let cols := match dims with
+    | some d => d.snd
+    | none => 0
+  let logoDoc : Doc Style :=
+    Layout.vcat
+      [ Doc.text " _      ______    _    _   _ " |> fg_hex cfg.colors.accent |> bold
+      , Doc.text "| |    |  ____|  / \\  | \\ | |" |> fg_hex cfg.colors.accent |> bold
+      , Doc.text "| |    | |__    / _ \\ |  \\| |" |> fg_hex cfg.colors.primary |> bold
+      , Doc.text "| |    |  __|  / ___ \\| |\\  |" |> fg_hex cfg.colors.primary |> bold
+      , Doc.text "| |____| |____/_/   \\_\\_| \\_|" |> fg_hex cfg.colors.secondary |> bold
+      , Doc.text "|______|______|                " |> fg_hex cfg.colors.secondary |> bold
+      , Doc.empty
+      , Doc.text "lfetch" |> fg_hex cfg.colors.accent |> bold
+      , Doc.text "System fetch built with Leansi" |> fg_hex cfg.colors.muted |> italic
+      ]
+  leansi.println (leansi.Layout.columns [30, cols-31] 1 [logoDoc, (← renderReport cfg warnings)] [] true)
 
 end Lfetch.Output
