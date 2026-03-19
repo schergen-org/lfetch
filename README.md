@@ -67,12 +67,6 @@ Load behavior in the current code:
 - if JSON parsing fails, `lfetch` falls back to the default config and renders a warning box
 - if JSON shape decoding fails, `lfetch` falls back to the default config and renders a warning box
 
-### JSON Shape
-
-The config schema is defined in [`Lfetch/Config/Types.lean`](/home/benjamin/Repos/lfetch/Lfetch/Config/Types.lean).
-
-The JSON decoder expects the correctly spelled field names `thresholdLow`, `thresholdMid`, and `thresholdHigh`.
-
 ### Color Fields
 
 The configured colors are used as follows:
