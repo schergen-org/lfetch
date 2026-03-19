@@ -9,7 +9,7 @@
 
 
 > [!NOTE]  
-> This library was created as part of the “Funktionale Programmierung in Lean” module as an examination requirement at the University of Applied Sciences Mittelhessen.
+> This programm was created as part of the “Funktionale Programmierung in Lean” module as an examination requirement at the University of Applied Sciences Mittelhessen.
 
 <h1 align="center">lfetch</h1>
 <p align="center">A simple system information tool written in LEAN 4</p><br>
