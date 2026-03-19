@@ -79,6 +79,21 @@ private def groupTitleDoc? (palette : Palette) (title? : Option String) : Option
       some (((Doc.text title).ann palette.primary) |> bold)
   | none => none
 
+/-- A small palette strip mirrors the color blocks often shown by fetch tools. -/
+private def paletteDoc (cfg : Config) : Doc Style :=
+  let swatch (hex : String) : Doc Style := Doc.text "  " |> bg_hex hex
+  let row :=
+    Layout.hcatSep 1
+      [ swatch cfg.colors.primary
+      , swatch cfg.colors.secondary
+      , swatch cfg.colors.accent
+      , swatch cfg.colors.muted
+      ]
+  ((Doc.text "Palette").ann (Style.fg_hex cfg.colors.secondary) |> bold) ++ (Doc.text " ") ++ row
+
+private def appendPalette (cfg : Config) (docs : List (Doc Style)) : List (Doc Style) :=
+  docs ++ [Doc.empty, paletteDoc cfg]
+
 private def warningBox (palette : Palette) (maxWidth : Nat) (warnings : List String) : Doc Style :=
   let labelWidth := 10
   let widestWarning := warnings.foldl (fun acc warning => max acc (visualWidth warning)) 24
@@ -125,7 +140,7 @@ def renderConfig (cfg : Config) : IO (Doc Style) := do
   let width ← terminalWidth
   let palette := paletteOfConfig cfg
   let groupDocs ← cfg.groups.mapM (renderGroup cfg palette width)
-  pure <| Layout.vcat (intersperseBlankLines groupDocs)
+  pure <| Layout.vcat (appendPalette cfg (intersperseBlankLines groupDocs))
 
 def renderReport (cfg : Config) (warnings : List String := []) : IO (Doc Style) := do
   let width ← terminalWidth
@@ -135,7 +150,7 @@ def renderReport (cfg : Config) (warnings : List String := []) : IO (Doc Style) 
     match warnings with
     | [] => groupDocs
     | _ => warningBox palette width warnings :: groupDocs
-  pure <| Layout.vcat (intersperseBlankLines docs)
+  pure <| Layout.vcat (appendPalette cfg (intersperseBlankLines docs))
 
 def printConfig (cfg : Config) : IO Unit := do
   leansi.println (← renderConfig cfg)
