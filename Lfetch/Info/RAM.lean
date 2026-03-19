@@ -1,4 +1,5 @@
 import Std
+import Lfetch.Info.Common
 
 namespace Lfetch.Info.RAM
 
@@ -23,10 +24,27 @@ private def parseMeminfoKiB (content : String) (keyWanted : String) : Option Nat
         go ls
   go lines
 
-private def kibToMiB (kib : Nat) : Nat :=
-  kib / 1024
+private def kibToGiB (kib : Nat) : Float :=
+  kib.toFloat / 1024 / 1024
 
-def fetch : IO String := do
+private def usagePercent (used total : Float) : Nat :=
+  if total == 0.0 then
+    0
+  else
+    ((used * 100.0) / total).round.toUInt64.toNat
+
+def format2 (x : Float) : String :=
+  let scaled := Float.round (x * 100.0)
+  let intPart := (scaled / 100.0).toUInt64.toNat
+  let fracPart := (scaled.toUInt64.toNat) % 100
+  s!"{intPart}.{if fracPart < 10 then "0" else ""}{fracPart}"
+
+private def formatUsage (colors : Lfetch.Colors) (usedMiB totalMiB : Float) : Lfetch.Info.InfoLines :=
+  let bar := Lfetch.Info.ProgressBarWithThresholds colors (usagePercent usedMiB totalMiB) true 20
+  let details := Lfetch.Info.mutedDoc colors s!"{format2 usedMiB} GiB / {format2 totalMiB} GiB"
+  [details, bar]
+
+def fetch (colors : Lfetch.Colors) : IO Lfetch.Info.InfoLines := do
   let path : System.FilePath := "/proc/meminfo"
   if (← path.pathExists) then
     let content ← IO.FS.readFile path
@@ -35,13 +53,12 @@ def fetch : IO String := do
     match total?, avail? with
     | some totalKiB, some availKiB =>
       let usedKiB := totalKiB - availKiB
-      let totalMiB := kibToMiB totalKiB
-      let usedMiB  := kibToMiB usedKiB
-      let availMiB := kibToMiB availKiB
-      pure s!"{usedMiB} MiB used / {totalMiB} MiB (avail {availMiB} MiB)"
+      let totalGiB := kibToGiB totalKiB
+      let usedGiB  := kibToGiB usedKiB
+      pure (formatUsage colors usedGiB totalGiB)
     | _, _ =>
-      pure "unknown"
+      pure [Lfetch.Info.unknownDoc colors]
   else
-    pure "unknown"
+    pure [Lfetch.Info.unknownDoc colors]
 
 end Lfetch.Info.RAM

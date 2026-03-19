@@ -1,3 +1,6 @@
+import Lfetch.Info.Common
+import leansi.Doc.Type
+
 namespace Lfetch.Info.Drive
 
 private def excludedFsTypes : List String :=
@@ -34,41 +37,53 @@ private def parseDfLine (line : String) : Option DriveEntry :=
   | _ => none
 
 /-- small bar visualisation like `[████░░░░░░] 42%`. -/
-private def usageBar (pctStr : String) (barWidth : Nat := 10) : String :=
-  let pctClean := pctStr.replace "%" "" |> trimLine
-  let pct := pctClean.toNat?.getD 0
-  let filled := (pct * barWidth + 50) / 100
-  let empty  := barWidth - filled
-  let bar := String.ofList (List.replicate filled '█') ++
-             String.ofList (List.replicate empty  '░')
-  s!"[{bar}] {pctStr}"
+private def parsePct (pctStr : String) : Nat :=
+  ((pctStr.replace "%" "").trimAscii.toString).toNat?.getD 0
 
-private def formatEntry (e : DriveEntry) : String :=
-  let bar := usageBar e.usePct
-  s!"  {e.mountPoint}  {bar}  {e.used}/{e.size}"
+private def formatEntry (colors : Lfetch.Colors) (e : DriveEntry) : Lfetch.Info.InfoLines :=
+  let bar := Lfetch.Info.ProgressBarWithThresholds colors (parsePct e.usePct) true 20
+  let details := Lfetch.Info.mutedDoc colors s!"{e.used}/{e.size}"
+  [Lfetch.Info.textDoc e.mountPoint, details, bar]
 
 private def isRealFs (e : DriveEntry) : Bool :=
   let startsReal := e.filesystem.startsWith "/" || e.filesystem.startsWith "//"
   let notExcluded := !(excludedFsTypes.any (· == e.filesystem))
   startsReal && notExcluded
 
-def fetch : IO String := do
-  let result ← IO.Process.output {
-    cmd  := "df"
-    args := #["-h"]
-  }
-  if result.exitCode != 0 then
-    return "error running df"
-  let lines := result.stdout.splitOn "\n"
-    |>.map trimLine
-    |>.filter (· ≠ "")
+def fetch (colors : Lfetch.Colors) : IO Lfetch.Info.InfoLines := do
+  try
+    let result ← IO.Process.output {
+      cmd  := "df"
+      args := #["-h"]
+    }
 
-  let dataLines := lines.drop 1
-  let entries := dataLines.filterMap parseDfLine
-  let realEntries := entries.filter isRealFs
-  if realEntries.isEmpty then
-    return "no drives found"
-  let formatted := realEntries.map formatEntry
-  return "\n" ++ String.intercalate "\n" formatted
+    if result.exitCode != 0 then
+      return [Lfetch.Info.mutedItalicDoc colors "error running df"]
+
+    let lines :=
+      result.stdout.splitOn "\n"
+      |>.map trimLine
+      |>.filter (· ≠ "")
+
+    let dataLines := lines.drop 1
+    let entries := dataLines.filterMap parseDfLine
+    let realEntries := entries.filter isRealFs
+
+    if realEntries.isEmpty then
+      return [Lfetch.Info.mutedItalicDoc colors "no drives found"]
+
+    let formatted : Lfetch.Info.InfoLines :=
+      (realEntries.map (formatEntry colors)).foldr
+        (fun docs acc =>
+          if acc.isEmpty then
+            docs
+          else
+            docs ++ [leansi.Doc.empty] ++ acc)
+        []
+
+    return formatted
+
+  catch _ =>
+    return [Lfetch.Info.mutedItalicDoc colors "error running df"]
 
 end Lfetch.Info.Drive

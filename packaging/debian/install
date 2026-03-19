@@ -1,0 +1,2 @@
+.lake/build/bin/lfetch usr/bin/lfetch
+packaging/etc/config.json.default usr/share/lfetch/config.json.default

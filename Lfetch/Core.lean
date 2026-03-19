@@ -1,42 +1,12 @@
-import Lfetch.Config
-import Lfetch.Info.Dummy
-import Lfetch.Info.OS
-import Lfetch.Info.Drive
-import Lfetch.Info.User
-import Lfetch.Info.Shell
-import Lfetch.Info.Home
-import Lfetch.Info.Hostname
-import Lfetch.Info.Kernel
-import Lfetch.Info.Arch
-import Lfetch.Info.Terminal
-import Lfetch.Info.Locale
-import Lfetch.Info.Uptime
-import Lfetch.Info.CPU
-import Lfetch.Info.RAM
-import Lfetch.Info.Battery
+import Lfetch.Runtime.InfoRegistry
+import Lfetch.Config.Types
+import Lfetch.Info.Common
 
 namespace Lfetch
 
-def runInfo : InfoKey → IO String
-  | .dummy     => Info.Dummy.fetch
-  | .os        => Info.OS.fetch
-  | .drive     => Info.Drive.fetch
-  | .user      => Info.User.fetch
-  | .shell     => Info.Shell.fetch
-  | .home      => Info.Home.fetch
-  | .hostname  => Info.Host.fetch
-  | .kernel    => Info.Kernel.fetch
-  | .arch      => Info.Arch.fetch
-  | .terminal   => Info.Terminal.fetch
-  | .locale    => Info.Language.fetch
-  | .uptime    => Info.Uptime.fetch
-  | .cpu       => Info.CPU.fetch
-  | .ram       => Info.RAM.fetch
-  | .battery   => Info.Battery.fetch
-
-def fetchAll (keys : List InfoKey) : IO (List (InfoKey × String)) := do
+def fetchAll (colors : Colors) (keys : List InfoKey) : IO (List (InfoKey × Lfetch.Info.InfoLines)) := do
   keys.mapM (fun k => do
-    let v ← runInfo k
+    let v ← Runtime.InfoRegistry.runInfo colors k
     pure (k, v)
   )
 

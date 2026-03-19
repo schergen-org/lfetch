@@ -1,0 +1,10 @@
+Package: lfetch
+Version: 1.0.0
+Section: utils
+Priority: optional
+Architecture: amd64
+Maintainer: schergen-org <noreply@github.com>
+Depends: coreutils
+Description: Simple system information tool written in Lean 4
+ lfetch prints concise system information in a neofetch-style layout.
+ Configure via ~/.config/lfetch/config.json

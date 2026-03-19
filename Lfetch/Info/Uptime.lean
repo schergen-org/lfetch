@@ -1,4 +1,5 @@
 import Std
+import Lfetch.Info.Common
 
 namespace Lfetch.Info.Uptime
 
@@ -25,14 +26,14 @@ private def fmtUptime (secs : Nat) : String :=
   else
     s!"{m}m"
 
-def fetch : IO String := do
+def fetch (colors : Lfetch.Colors) : IO Lfetch.Info.InfoLines := do
   let path : System.FilePath := "/proc/uptime"
   if (← path.pathExists) then
     let content ← IO.FS.readFile path
     match parseUptimeSeconds content with
-    | some s => pure (fmtUptime s)
-    | none   => pure "unknown"
+    | some s => pure [Lfetch.Info.textDoc (fmtUptime s)]
+    | none   => pure [Lfetch.Info.unknownDoc colors]
   else
-    pure "unknown"
+    pure [Lfetch.Info.unknownDoc colors]
 
 end Lfetch.Info.Uptime

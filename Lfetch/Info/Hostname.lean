@@ -1,4 +1,5 @@
 import Std
+import Lfetch.Info.Common
 
 namespace Lfetch.Info.Host
 
@@ -28,12 +29,12 @@ private def unameFallback : IO (Option String) := do
   catch _ =>
     pure none
 
-def fetch : IO String := do
+def fetch (colors : Lfetch.Colors) : IO Lfetch.Info.InfoLines := do
   match (← readEtcHostname) with
-  | some hn => pure hn
+  | some hn => pure [Lfetch.Info.textDoc hn]
   | none =>
     match (← unameFallback) with
-    | some hn => pure hn
-    | none    => pure "unknown"
+    | some hn => pure [Lfetch.Info.textDoc hn]
+    | none    => pure [Lfetch.Info.unknownDoc colors]
 
 end Lfetch.Info.Host

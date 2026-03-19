@@ -1,4 +1,5 @@
 import Std
+import Lfetch.Info.Common
 
 namespace Lfetch.Info.CPU
 
@@ -29,14 +30,14 @@ private def findFirstValue (content : String) (wanted : List String) : Option St
       | none => go ls
   go lines
 
-def fetch : IO String := do
+def fetch (colors : Lfetch.Colors) : IO Lfetch.Info.InfoLines := do
   let path : System.FilePath := "/proc/cpuinfo"
   if (← path.pathExists) then
     let content ← IO.FS.readFile path
     match findFirstValue content ["model name", "Hardware", "Processor"] with
-    | some cpu => pure cpu
-    | none     => pure "unknown"
+    | some cpu => pure [Lfetch.Info.textDoc cpu]
+    | none     => pure [Lfetch.Info.unknownDoc colors]
   else
-    pure "unknown"
+    pure [Lfetch.Info.unknownDoc colors]
 
 end Lfetch.Info.CPU
