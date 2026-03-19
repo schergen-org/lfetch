@@ -1,18 +1,27 @@
-# lfetch
+<p align="center"><img width="671" height="193" alt="2026-02-25_13-26-32" src="https://github.com/user-attachments/assets/8d211559-387c-49f0-9980-46c4ab6b2103" /></p>
 
 [![Lean Action CI](https://github.com/schergen-org/lfetch/actions/workflows/lean_action_ci.yml/badge.svg)](https://github.com/schergen-org/lfetch/actions/workflows/lean_action_ci.yml)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+<a href="https://github.com/schergen-org/lfetch/releases/tag/v0.1.0" alt="Version 0.1.0">
+        <img src="https://img.shields.io/badge/version-0.1.0-blue" /></a>
 
-`lfetch` is a small fetch-style system information tool written in Lean 4.
+<h1 align="center">lfetch</h1>
+<p align="center">A simple system information tool written in LEAN 4</p><br>
+<sup><p align="center">Functionally inspired by <a href="https://github.com/dylanaraps/pfetch">pfetch</a>, <a href="https://github.com/dylanaraps/neofetch">neofetch</a>, ...</p></sup><br>
 
-The current repository state implements:
+<img width="490" height="302" alt="2026-02-25_13-43-38" src="https://github.com/user-attachments/assets/510591db-4058-4832-9157-b05b66c6bfb9" align="right" />
 
-- a Lean executable `lfetch` with entry point [`Main.lean`](/home/benjamin/Repos/lfetch/Main.lean)
-- styled terminal output built with `leansi`
-- JSON configuration loaded from `~/.config/lfetch/config.json`
-- Linux-oriented info providers backed by `/etc`, `/proc`, `/sys`, environment variables, `uname`, and `df`
 
-There are currently no CLI options. Running the program just loads the config and prints the report.
+`lfetch` is a small “fetch”-style system information tool, similar in spirit to **neofetch**, but written in **Lean 4**. It prints a set of basic system details in the terminal.
+
+What gets printed (and in what order) is controlled through a simple config file.
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
 ## Current Scope
 
