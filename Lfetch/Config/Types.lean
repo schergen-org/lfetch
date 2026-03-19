@@ -9,10 +9,14 @@ structure Colors where
   secondary : String
   accent : String
   muted : String
+  thresholdLow: String
+  thresholdMid: String
+  thresholdHigh: String
   deriving Repr, Inhabited, FromJson, ToJson
 
 structure InfoGroup where
   title : Option String := none
+  padding : Option Nat := none
   infos : List InfoKey
   deriving Repr, Inhabited, FromJson, ToJson
 

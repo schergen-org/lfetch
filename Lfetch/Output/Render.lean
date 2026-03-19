@@ -24,6 +24,7 @@ private def paletteOfConfig (cfg : Config) : Palette :=
 
 private def infoLabel : InfoKey → String
   | .dummy => "Dummy"
+  | .palette => "Palette"
   | .os => "OS"
   | .drive => "Drive"
   | .user => "User"
@@ -105,12 +106,22 @@ private def renderGroup (cfg : Config) (palette : Palette) (maxWidth : Nat) (gro
   let labelWidth := labelColumnWidth group
   let maxValueWidth := max 16 (maxWidth - 2 - 4 - labelWidth - 2)
   let valueWidth := min (preferredValueColumnWidth results) maxValueWidth
-  let rows := results.map fun (key, lines) =>
-    Layout.columns [labelWidth, valueWidth] 2
-      [ labelDoc palette key
-      , linesDoc palette lines
-      ]
-      [Alignment.left, Alignment.left]
+  let baseRows := results.map fun (key, lines) =>
+  Layout.columns [labelWidth, valueWidth] 2
+    [ labelDoc palette key
+    , linesDoc palette lines
+    ]
+    [Alignment.left, Alignment.left]
+  let rows :=
+    match group.padding with
+    | none => baseRows
+    | some p =>
+      let spacer := List.replicate p (Doc.empty)
+      baseRows.foldr (fun row acc =>
+        match acc with
+        | [] => [row]  -- last Element (no Spacer after that)
+        | _  => row :: spacer ++ acc
+      ) []
   pure <| box (Layout.vcat rows) {
     title := groupTitleDoc? palette group.title
     chars := roundedBoxChars
@@ -138,9 +149,25 @@ def renderReport (cfg : Config) (warnings : List String := []) : IO (Doc Style) 
   pure <| Layout.vcat (intersperseBlankLines docs)
 
 def printConfig (cfg : Config) : IO Unit := do
-  leansi.println (← renderConfig cfg)
+  leansi.println ((← renderConfig cfg))
 
 def printReport (cfg : Config) (warnings : List String := []) : IO Unit := do
-  leansi.println (← renderReport cfg warnings)
+  let dims <- leansi.getTerminalDimensions
+  let cols := match dims with
+    | some d => d.snd
+    | none => 0
+  let logoDoc : Doc Style :=
+    Layout.vcat
+      [ Doc.text " _      ______    _    _   _ " |> fg_hex cfg.colors.accent |> bold
+      , Doc.text "| |    |  ____|  / \\  | \\ | |" |> fg_hex cfg.colors.accent |> bold
+      , Doc.text "| |    | |__    / _ \\ |  \\| |" |> fg_hex cfg.colors.primary |> bold
+      , Doc.text "| |    |  __|  / ___ \\| |\\  |" |> fg_hex cfg.colors.primary |> bold
+      , Doc.text "| |____| |____/_/   \\_\\_| \\_|" |> fg_hex cfg.colors.secondary |> bold
+      , Doc.text "|______|______|                " |> fg_hex cfg.colors.secondary |> bold
+      , Doc.empty
+      , Doc.text "lfetch" |> fg_hex cfg.colors.accent |> bold
+      , Doc.text "System fetch built with Lean" |> fg_hex cfg.colors.muted |> italic
+      ]
+  leansi.println (leansi.Layout.columns [30, cols-31] 1 [logoDoc, (← renderReport cfg warnings)] [] true)
 
 end Lfetch.Output

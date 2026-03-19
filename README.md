@@ -1,178 +1,180 @@
-<p align="center"><img width="671" height="193" alt="2026-02-25_13-26-32" src="https://github.com/user-attachments/assets/8d211559-387c-49f0-9980-46c4ab6b2103" /></p>
-
 [![Lean Action CI](https://github.com/schergen-org/lfetch/actions/workflows/lean_action_ci.yml/badge.svg)](https://github.com/schergen-org/lfetch/actions/workflows/lean_action_ci.yml)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 <a href="https://github.com/schergen-org/lfetch/releases/tag/v0.1.0" alt="Version 0.1.0">
         <img src="https://img.shields.io/badge/version-0.1.0-blue" /></a>
+        
+<p align="center">This program serves as a sample implementation using <a href="https://github.com/schergen-org/Leansi">Leansi</a></p>
+
+> [!NOTE]  
+> This programm was created as part of the “Funktionale Programmierung in Lean” module as an examination requirement at the University of Applied Sciences Mittelhessen.
 
 <h1 align="center">lfetch</h1>
 <p align="center">A simple system information tool written in LEAN 4</p><br>
 <sup><p align="center">Functionally inspired by <a href="https://github.com/dylanaraps/pfetch">pfetch</a>, <a href="https://github.com/dylanaraps/neofetch">neofetch</a>, ...</p></sup><br>
 
-<img width="490" height="302" alt="2026-02-25_13-43-38" src="https://github.com/user-attachments/assets/510591db-4058-4832-9157-b05b66c6bfb9" align="right" />
+<img width="600" alt="Lfetch" src="https://github.com/user-attachments/assets/32eaaff2-a52e-445d-b175-afe110605a42" align="right" />
 
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
 `lfetch` is a small “fetch”-style system information tool, similar in spirit to **neofetch**, but written in **Lean 4**. It prints a set of basic system details in the terminal.
 
 What gets printed (and in what order) is controlled through a simple config file.
 
+
 <br>
 <br>
 <br>
 <br>
 <br>
 <br>
+<br>
+<br>
+
+
+## Current Scope
+
+The implementation is Linux-focused at the moment. Several providers read Linux-specific files such as `/etc/os-release`, `/proc/uptime`, `/proc/cpuinfo`, `/proc/meminfo`, and `/sys/class/power_supply`, so the current codebase should not be described as cross-platform.
+
+The rendered output consists of:
+
+- a fixed ASCII logo on the left
+- one boxed section per configured group on the right
+- an additional warning box if the config file exists but cannot be parsed or decoded
+
+## Build And Run
+
+The repository is configured for:
+
+- Lean toolchain `leanprover/lean4:v4.28.0`
+- package version `0.1.0`
+- executable target `lfetch`
+- library target `Lfetch`
+
+Build from source with Lake:
+
+```bash
+lake build
+lake exe lfetch
+```
+
+Repository-backed note about dependencies:
+
+- `leansi` is currently required via the SSH URL `git@github.com:schergen-org/Leansi.git` in [`lakefile.toml`](/lakefile.toml). On a fresh machine, fetching dependencies therefore requires GitHub SSH access or a local change to that dependency URL.
 
 ## Configuration
 
-`lfetch` reads its configuration from:
+`lfetch` reads:
 
 ```text
 $HOME/.config/lfetch/config.json
 ```
 
-The config uses JSON with two top-level sections:
-- `colors` (e.g. `primary`, `secondary`, `accent`, `muted`)
-- `groups` (optional `title` and an ordered list of `infos`)
+Load behavior in the current code:
 
-Only the `infos` listed in `groups` are printed, in that exact order.
+- if the file does not exist, `lfetch` silently uses the built-in default config
+- if JSON parsing fails, `lfetch` falls back to the default config and renders a warning box
 
-### Color roles
+### Color Fields
 
-The four configured colors have fixed rendering roles throughout the UI:
+The configured colors are used as follows:
 
-- `primary`: box borders and group titles
-- `secondary`: info labels in the left column
-- `accent`: highlights and widgets, especially the `ProgressBar` used by `drive`, `ram`, and `battery`
-- `muted`: secondary details and placeholder/fallback values such as `unknown`
+- `primary`: box borders, group titles and parts of the ASCII logo
+- `secondary`: info labels and parts of the ASCII logo
+- `accent`: warning box title/border and parts of the ASCII logo
+- `muted`: fallback values such as `unknown` and secondary detail text
+- `thresholdLow`, `thresholdMid`, `thresholdHigh`: threshold colors for progress bars
 
-This keeps the layout readable even when individual infos render richer `Leansi` documents instead of plain text.
+Progress bars are used by:
 
-### Available keys
-
-- `os`
-- `drive`
-- `user`
-- `shell`
-- `home`
-- `hostname`
-- `kernel`
-- `arch`
-- `terminal`
-- `locale`
-- `uptime`
 - `ram`
-- `cpu`
 - `battery`
+- `drive`
 
-### Example config
+For `ram` and `drive`, the bar colors grow from low to high usage. For `battery`, the color mapping is inverted so high charge is shown as good and low charge as bad.
+
+### Groups
+
+Each group contains:
+
+- `title : Option String`
+- `padding : Option Nat`
+- `infos : List InfoKey`
+
+`padding` inserts blank lines between the rows of that group. If it is omitted, rows are rendered directly one after another.
+
+### Default Config
+
+The built-in default config from [`Lfetch/Config/Defaults.lean`](/Lfetch/Config/Defaults.lean) is:
 
 ```json
 {
   "colors": {
-    "primary": "#FFFFFF",
-    "secondary": "#C0C0C0",
-    "accent": "#4FA3FF",
-    "muted": "#808080"
+    "primary": "#94e2d5",
+    "secondary": "#fab387",
+    "accent": "#89b4fa",
+    "muted": "#585b70",
+    "thresholdLow": "#a6e3a1",
+    "thresholdMid": "#f9e2af",
+    "thresholdHigh": "#f38ba8"
   },
   "groups": [
     {
-      "title": null,
-      "infos": ["user", "hostname", "os"]
+      "title": "Overview",
+      "infos": ["user", "os", "kernel", "uptime", "shell", "cpu", "arch", "palette"]
     },
     {
-      "title": "System",
-      "infos": ["kernel", "arch", "uptime", "ram", "cpu", "battery"]
+      "title": "Resources",
+      "padding": 1,
+      "infos": ["ram", "battery", "drive"]
     }
   ]
 }
 ```
 
-## Architecture
+## Available Info Keys
 
-The codebase is split into clear layers:
+The currently supported keys are defined in [`Lfetch/Domain/InfoKey.lean`](/Lfetch/Domain/InfoKey.lean).
 
-- `Lfetch/Config/*`: config schema, defaults, and loading from `~/.config/lfetch/config.json`
-- `Lfetch/Domain/*`: core domain types (currently `InfoKey`)
-- `Lfetch/Runtime/*`: runtime wiring/dispatch (mapping `InfoKey -> fetch`)
-- `Lfetch/Info/*`: concrete info providers (`OS`, `CPU`, `RAM`, ...), now returning `List (Doc Style)` instead of `List String`
-- `Lfetch/Output/*`: rendering and layout with `Leansi`
+| Key | Source in current code | Output notes |
+| --- | --- | --- |
+| `dummy` | placeholder module | prints `TODO(dummy-info)` |
+| `palette` | built-in `leansi` color swatches | renders two rows of color blocks |
+| `os` | `/etc/os-release`, fallback `uname -sr` | prints distro or kernel-style fallback |
+| `drive` | `df -h` | shows mount point, used/total, and a progress bar; filters out pseudo-filesystems |
+| `user` | `USER`, fallback `LOGNAME` | prints the current user |
+| `shell` | `SHELL` | prints the shell path |
+| `home` | `HOME` | prints the home directory |
+| `hostname` | `/etc/hostname`, fallback `uname -n` | prints the host name |
+| `kernel` | `uname -sr` | prints kernel name and release |
+| `arch` | `uname -m` | prints machine architecture |
+| `terminal` | `TERM`, fallback `TERM_PROGRAM` | prints terminal identifier |
+| `locale` | `LANG`, fallback `LC_ALL` | prints locale setting |
+| `uptime` | `/proc/uptime` | formatted as `Xm`, `Hh Mm`, or `Dd Hh Mm` |
+| `cpu` | `/proc/cpuinfo` | first matching key among `model name`, `Hardware`, `Processor` |
+| `ram` | `/proc/meminfo` | prints used/total GiB and a progress bar |
+| `battery` | `/sys/class/power_supply/BAT*` | prints one entry per battery with status and a progress bar |
 
-This keeps configuration, domain modeling, info collection, and terminal rendering separated.
+Fallback behavior varies per provider:
 
-## Rendering
+- missing values commonly render as muted italic `unknown`
+- `battery` renders `No battery found` if no `BAT*` entries exist
+- `drive` renders `error running df` if `df` fails and `no drives found` if no real filesystems remain after filtering
 
-`lfetch` now builds its output on top of **Leansi**. Each info provider returns structured `Doc` values, so rendering can preserve styling and widget composition until the final terminal output stage.
+## Repository Layout
 
-Current conventions:
+- [`Lfetch/Config`](/Lfetch/Config) contains config types, defaults, and loading
+- [`Lfetch/Domain`](/Lfetch/Domain) contains domain types such as `InfoKey`
+- [`Lfetch/Runtime`](/Lfetch/Runtime) maps keys to provider modules
+- [`Lfetch/Info`](/Lfetch/Info) contains the individual info providers
+- [`Lfetch/Output`](/Lfetch/Output) contains report rendering
 
-- Simple infos such as `user`, `os`, `kernel`, or `cpu` return plain `Doc.text` lines.
-- Missing or unavailable values are rendered as muted italic docs.
-- `drive`, `ram`, and `battery` use `Leansi.progressBar`, with the configured `accent` color used for the active bar state and `muted` used for auxiliary text.
-- Group boxes and warning boxes are still rendered centrally in `Lfetch/Output/Render.lean`.
+## License
 
-
-## Installation (Linux)
-
-The GitHub Release contains a prebuilt executable called `lfetch`. To be able to run it by simply typing `lfetch` in the terminal, the file must:
-
-1. be executable (`chmod +x`)
-2. be placed in a directory that is in your `$PATH` (e.g. `~/.local/bin` or `/usr/local/bin`)
-
-### Option A (recommended, no sudo): `~/.local/bin`
-
-1) Download `lfetch` from the GitHub Release (e.g. to `~/Downloads`)
-
-2) Create the target directory:
-```bash
-mkdir -p ~/.local/bin
-```
-
-3) Make it executable and move it into place:
-```bash
-chmod +x ~/Downloads/lfetch
-mv ~/Downloads/lfetch ~/.local/bin/lfetch
-```
-
-4) Ensure `~/.local/bin` is in your `PATH`:
-```bash
-echo $PATH
-```
-
-If it’s not listed, add it to your shell config:
-
-**bash:**
-```bash
-echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
-source ~/.bashrc
-```
-
-**zsh:**
-```bash
-echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
-source ~/.zshrc
-```
-
-Now you can run:
-```bash
-lfetch
-```
-
----
-
-### Option B (system-wide, with sudo): `/usr/local/bin`
-
-1) Download `lfetch` from the GitHub Release (e.g. to `~/Downloads`)
-
-2) Install it system-wide:
-```bash
-chmod +x ~/Downloads/lfetch
-sudo mv ~/Downloads/lfetch /usr/local/bin/lfetch
-```
-
-Run:
-```bash
-lfetch
-```
-
----
+This repository ships the GNU General Public License v3.0 in [`LICENSE`](/LICENSE).
