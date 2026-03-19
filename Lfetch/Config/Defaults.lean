@@ -19,7 +19,7 @@ def defaultConfig : Config :=
     groups := [
       {
         title := "Overview"
-        infos := [.os, .kernel, .uptime, .shell, .cpu, .arch, .palette]
+        infos := [.user, .os, .kernel, .uptime, .shell, .cpu, .arch, .palette]
       },
       {
         title := "Resources"
