@@ -51,7 +51,7 @@ lake exe lfetch
 
 Repository-backed note about dependencies:
 
-- `leansi` is currently required via the SSH URL `git@github.com:schergen-org/Leansi.git` in [`lakefile.toml`](/home/benjamin/Repos/lfetch/lakefile.toml). On a fresh machine, fetching dependencies therefore requires GitHub SSH access or a local change to that dependency URL.
+- `leansi` is currently required via the SSH URL `git@github.com:schergen-org/Leansi.git` in [`lakefile.toml`](/lakefile.toml). On a fresh machine, fetching dependencies therefore requires GitHub SSH access or a local change to that dependency URL.
 
 ## Configuration
 
@@ -70,9 +70,9 @@ Load behavior in the current code:
 
 The configured colors are used as follows:
 
-- `primary`: box borders, group titles, and parts of the ASCII logo
+- `primary`: box borders, group titles and parts of the ASCII logo
 - `secondary`: info labels and parts of the ASCII logo
-- `accent`: parts of the ASCII logo and the warning box title/border
+- `accent`: warning box title/border and parts of the ASCII logo
 - `muted`: fallback values such as `unknown` and secondary detail text
 - `thresholdLow`, `thresholdMid`, `thresholdHigh`: threshold colors for progress bars
 
@@ -96,7 +96,7 @@ Each group contains:
 
 ### Default Config
 
-The built-in default config from [`Lfetch/Config/Defaults.lean`](/home/benjamin/Repos/lfetch/Lfetch/Config/Defaults.lean) is:
+The built-in default config from [`Lfetch/Config/Defaults.lean`](/Lfetch/Config/Defaults.lean) is:
 
 ```json
 {
@@ -125,7 +125,7 @@ The built-in default config from [`Lfetch/Config/Defaults.lean`](/home/benjamin/
 
 ## Available Info Keys
 
-The currently supported keys are defined in [`Lfetch/Domain/InfoKey.lean`](/home/benjamin/Repos/lfetch/Lfetch/Domain/InfoKey.lean).
+The currently supported keys are defined in [`Lfetch/Domain/InfoKey.lean`](/Lfetch/Domain/InfoKey.lean).
 
 | Key | Source in current code | Output notes |
 | --- | --- | --- |
@@ -154,12 +154,12 @@ Fallback behavior varies per provider:
 
 ## Repository Layout
 
-- [`Lfetch/Config`](/home/benjamin/Repos/lfetch/Lfetch/Config) contains config types, defaults, and loading
-- [`Lfetch/Domain`](/home/benjamin/Repos/lfetch/Lfetch/Domain) contains domain types such as `InfoKey`
-- [`Lfetch/Runtime`](/home/benjamin/Repos/lfetch/Lfetch/Runtime) maps keys to provider modules
-- [`Lfetch/Info`](/home/benjamin/Repos/lfetch/Lfetch/Info) contains the individual info providers
-- [`Lfetch/Output`](/home/benjamin/Repos/lfetch/Lfetch/Output) contains report rendering
+- [`Lfetch/Config`](/Lfetch/Config) contains config types, defaults, and loading
+- [`Lfetch/Domain`](/Lfetch/Domain) contains domain types such as `InfoKey`
+- [`Lfetch/Runtime`](/Lfetch/Runtime) maps keys to provider modules
+- [`Lfetch/Info`](/Lfetch/Info) contains the individual info providers
+- [`Lfetch/Output`](/Lfetch/Output) contains report rendering
 
 ## License
 
-This repository ships the GNU General Public License v3.0 in [`LICENSE`](/home/benjamin/Repos/lfetch/LICENSE).
+This repository ships the GNU General Public License v3.0 in [`LICENSE`](/LICENSE).
