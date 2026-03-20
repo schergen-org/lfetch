@@ -48,25 +48,6 @@ The rendered output consists of:
 - one boxed section per configured group on the right
 - an additional warning box if the config file exists but cannot be parsed or decoded
 
-## Build And Run
-
-The repository is configured for:
-
-- Lean toolchain `leanprover/lean4:v4.28.0`
-- package version `0.1.0`
-- executable target `lfetch`
-- library target `Lfetch`
-
-Build from source with Lake:
-
-```bash
-lake build
-lake exe lfetch
-```
-
-Repository-backed note about dependencies:
-
-- `leansi` is currently required via the SSH URL `git@github.com:schergen-org/Leansi.git` in [`lakefile.toml`](/lakefile.toml). On a fresh machine, fetching dependencies therefore requires GitHub SSH access or a local change to that dependency URL.
 
 ## Installation via Debian Package
 
@@ -97,6 +78,27 @@ Repository-backed note about dependencies:
 4. **Configuration:**
 
    `lfetch` will automatically create a default configuration file at `$HOME/.config/lfetch/config.json` on first run if no custom configuration exists. You can edit this file to customize colors and displayed information.
+
+
+## Build And Run
+
+The repository is configured for:
+
+- Lean toolchain `leanprover/lean4:v4.28.0`
+- package version `0.1.0`
+- executable target `lfetch`
+- library target `Lfetch`
+
+Build from source with Lake:
+
+```bash
+lake build
+lake exe lfetch
+```
+
+Repository-backed note about dependencies:
+
+- `leansi` is currently required via the SSH URL `git@github.com:schergen-org/Leansi.git` in [`lakefile.toml`](/lakefile.toml). On a fresh machine, fetching dependencies therefore requires GitHub SSH access or a local change to that dependency URL.
 
 ## Configuration
 
