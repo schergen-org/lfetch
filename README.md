@@ -48,6 +48,45 @@ The rendered output consists of:
 - one boxed section per configured group on the right
 - an additional warning box if the config file exists but cannot be parsed or decoded
 
+
+## Installation via Debian Package
+
+`lfetch` can be installed as a `.deb` package on Debian-based Linux distributions:
+
+### Oneliner 
+```bash
+wget https://github.com/schergen-org/lfetch/releases/download/v1.0.0/lfetch_1.0.0_amd64.deb \
+&& sudo dpkg -i ./lfetch_1.0.0_amd64.deb \
+&& rm lfetch_1.0.0_amd64.deb
+```
+
+1. **Download the latest release:**
+
+   Visit the [releases page](https://github.com/schergen-org/lfetch/releases) and download the `.deb` package for your architecture.
+
+2. **Install the package:**
+
+   ```bash
+   sudo dpkg -i lfetch_*.deb
+   ```
+
+   Or use your preferred package manager (e.g., `apt`):
+
+   ```bash
+   sudo apt install ./lfetch_*.deb
+   ```
+
+3. **Verify the installation:**
+
+   ```bash
+   lfetch
+   ```
+
+4. **Configuration:**
+
+   `lfetch` will automatically create a default configuration file at `$HOME/.config/lfetch/config.json` on first run if no custom configuration exists. You can edit this file to customize colors and displayed information.
+
+
 ## Build And Run
 
 The repository is configured for:
