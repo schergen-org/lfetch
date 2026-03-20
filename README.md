@@ -68,6 +68,36 @@ Repository-backed note about dependencies:
 
 - `leansi` is currently required via the SSH URL `git@github.com:schergen-org/Leansi.git` in [`lakefile.toml`](/lakefile.toml). On a fresh machine, fetching dependencies therefore requires GitHub SSH access or a local change to that dependency URL.
 
+## Installation via Debian Package
+
+`lfetch` can be installed as a `.deb` package on Debian-based Linux distributions:
+
+1. **Download the latest release:**
+
+   Visit the [releases page](https://github.com/schergen-org/lfetch/releases) and download the `.deb` package for your architecture.
+
+2. **Install the package:**
+
+   ```bash
+   sudo dpkg -i lfetch_*.deb
+   ```
+
+   Or use your preferred package manager (e.g., `apt`):
+
+   ```bash
+   sudo apt install ./lfetch_*.deb
+   ```
+
+3. **Verify the installation:**
+
+   ```bash
+   lfetch
+   ```
+
+4. **Configuration:**
+
+   `lfetch` will automatically create a default configuration file at `$HOME/.config/lfetch/config.json` on first run if no custom configuration exists. You can edit this file to customize colors and displayed information.
+
 ## Configuration
 
 `lfetch` reads:
