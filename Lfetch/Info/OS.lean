@@ -13,6 +13,7 @@ private def stripQuotes (s : String) : String :=
   else
     s
 
+/-- Extracts a single key from `/etc/os-release` style `KEY=value` content. -/
 private def parseOsReleaseValue (content : String) (wanted : String) : Option String :=
   let lines := content.splitOn "\n"
   let rec go : List String → Option String
@@ -69,6 +70,7 @@ private def unameFallback : IO String := do
   catch _ =>
     pure "unknown"
 
+/-- Reads the operating system name from `/etc/os-release` with `uname` as fallback. -/
 def fetch (colors : Lfetch.Colors) : IO Lfetch.Info.InfoLines := do
   match (← readOsRelease) with
   | some os => pure [Lfetch.Info.textDoc os]

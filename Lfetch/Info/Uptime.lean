@@ -13,6 +13,7 @@ private def parseUptimeSeconds (content : String) : Option Nat := do
   let secsStr := (firstField.splitOn "." |>.getD 0 "")
   secsStr.toNat?
 
+/-- Formats uptime seconds into a compact `Xd Yh Zm` style string. -/
 private def fmtUptime (secs : Nat) : String :=
   let minutes := secs / 60
   let hours   := minutes / 60
@@ -26,6 +27,7 @@ private def fmtUptime (secs : Nat) : String :=
   else
     s!"{m}m"
 
+/-- Reads system uptime from `/proc/uptime` and renders it as a short duration. -/
 def fetch (colors : Lfetch.Colors) : IO Lfetch.Info.InfoLines := do
   let path : System.FilePath := "/proc/uptime"
   if (← path.pathExists) then

@@ -6,6 +6,7 @@ namespace Lfetch.Info.Kernel
 private def trimLine (s : String) : String :=
   (s.trimAscii).toString
 
+/-- Reads the kernel name and release via `uname -sr`. -/
 def fetch (colors : Lfetch.Colors) : IO Lfetch.Info.InfoLines := do
   try
     let out ← IO.Process.output { cmd := "uname", args := #["-sr"] }

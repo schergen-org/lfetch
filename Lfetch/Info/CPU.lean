@@ -30,6 +30,7 @@ private def findFirstValue (content : String) (wanted : List String) : Option St
       | none => go ls
   go lines
 
+/-- Reads the first recognizable CPU model description from `/proc/cpuinfo`. -/
 def fetch (colors : Lfetch.Colors) : IO Lfetch.Info.InfoLines := do
   let path : System.FilePath := "/proc/cpuinfo"
   if (← path.pathExists) then

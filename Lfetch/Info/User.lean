@@ -3,6 +3,7 @@ import Lfetch.Info.Common
 
 namespace Lfetch.Info.User
 
+/-- Reads the current login name from the environment. -/
 def fetch (colors : Lfetch.Colors) : IO Lfetch.Info.InfoLines := do
   match (← IO.getEnv "USER") with
   | some u => pure [Lfetch.Info.textDoc u]

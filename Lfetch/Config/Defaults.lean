@@ -2,6 +2,7 @@ import Lfetch.Config.Types
 
 namespace Lfetch
 
+/-- Provides the built-in color palette used when no config file is available. -/
 def defaultColors : Colors :=
   {
     primary := "#94e2d5"
@@ -13,6 +14,7 @@ def defaultColors : Colors :=
     thresholdHigh := "#f38ba8"
   }
 
+/-- Defines the fallback layout and info groups for a default `lfetch` report. -/
 def defaultConfig : Config :=
   {
     colors := defaultColors

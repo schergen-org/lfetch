@@ -39,11 +39,13 @@ def format2 (x : Float) : String :=
   let fracPart := (scaled.toUInt64.toNat) % 100
   s!"{intPart}.{if fracPart < 10 then "0" else ""}{fracPart}"
 
+/-- Formats RAM usage as a compact value line plus a threshold-colored bar. -/
 private def formatUsage (colors : Lfetch.Colors) (usedMiB totalMiB : Float) : Lfetch.Info.InfoLines :=
   let bar := Lfetch.Info.ProgressBarWithThresholds colors (usagePercent usedMiB totalMiB) true 20
   let details := Lfetch.Info.mutedDoc colors s!"{format2 usedMiB} GiB / {format2 totalMiB} GiB"
   [details, bar]
 
+/-- Reads total and available memory from `/proc/meminfo` and renders current usage. -/
 def fetch (colors : Lfetch.Colors) : IO Lfetch.Info.InfoLines := do
   let path : System.FilePath := "/proc/meminfo"
   if (← path.pathExists) then

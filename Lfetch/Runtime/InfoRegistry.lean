@@ -20,6 +20,7 @@ import Lfetch.Info.Battery
 
 namespace Lfetch.Runtime.InfoRegistry
 
+/-- Dispatches an info key to the module that knows how to fetch it. -/
 def runInfo (colors : Lfetch.Colors) : Lfetch.InfoKey → IO Lfetch.Info.InfoLines
   | .dummy => Lfetch.Info.Dummy.fetch colors
   | .palette => Lfetch.Info.Palette.fetch colors

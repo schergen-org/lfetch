@@ -33,6 +33,7 @@ private def findBatteries : IO (List System.FilePath) := do
   let sorted := bats.map (·.path) |>.mergeSort (fun a b => a.toString < b.toString)
   return sorted
 
+/-- Formats one battery entry as a label line followed by a charge bar. -/
 private def formatEntry (colors : Lfetch.Colors) (name : String) (pct : Nat) (status : String) : Lfetch.Info.InfoLines :=
   let bar := Lfetch.Info.ProgressBarWithThresholds colors pct false 20
   let state := Lfetch.Info.mutedDoc colors (statusIcon status)
@@ -41,6 +42,7 @@ private def formatEntry (colors : Lfetch.Colors) (name : String) (pct : Nat) (st
 private def formatUnknownEntry (colors : Lfetch.Colors) (name : String) : Lfetch.Info.InfoDoc :=
   Lfetch.Info.textDoc name ++ Lfetch.Info.textDoc "  " ++ Lfetch.Info.mutedItalicDoc colors "unknown"
 
+/-- Reads all detected batteries from `/sys/class/power_supply` and renders charge status. -/
 def fetch (colors : Lfetch.Colors) : IO Lfetch.Info.InfoLines := do
   let batteries ← findBatteries
   if batteries.isEmpty then

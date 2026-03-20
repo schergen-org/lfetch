@@ -9,6 +9,7 @@ open leansi.Doc
 private def swatch (paint : Lfetch.Info.InfoDoc → Lfetch.Info.InfoDoc) : Lfetch.Info.InfoDoc :=
   Doc.text "   " |> paint
 
+/-- Renders the standard and bright terminal color palettes as two rows of swatches. -/
 def fetch (_colors : Lfetch.Colors) : IO Lfetch.Info.InfoLines := do
   let standard :=
     Layout.hcatSep 0

@@ -23,6 +23,7 @@ inductive InfoKey
   | battery
   deriving Repr, DecidableEq
 
+/-- Converts an `InfoKey` to the lowercase config string used in JSON. -/
 def InfoKey.toString : InfoKey → String
   | .dummy => "dummy"
   | .palette => "palette"
@@ -44,6 +45,7 @@ def InfoKey.toString : InfoKey → String
 private def trimLine (s : String) : String :=
   (s.trimAscii).toString
 
+/-- Parses a config string into the corresponding info provider key. -/
 def InfoKey.parse (s : String) : Option InfoKey :=
   match (trimLine s).toLower with
   | "dummy" => some .dummy
