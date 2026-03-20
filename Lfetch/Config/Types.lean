@@ -25,6 +25,7 @@ structure Config where
   groups : List InfoGroup
   deriving Repr, Inhabited, FromJson, ToJson
 
+/-- Collects all configured info keys in the order they should be rendered. -/
 def Config.infoKeys (cfg : Config) : List InfoKey :=
   cfg.groups.flatMap (fun group => group.infos)
 

@@ -29,6 +29,7 @@ private def unameFallback : IO (Option String) := do
   catch _ =>
     pure none
 
+/-- Resolves the hostname from `/etc/hostname` with `uname -n` as fallback. -/
 def fetch (colors : Lfetch.Colors) : IO Lfetch.Info.InfoLines := do
   match (← readEtcHostname) with
   | some hn => pure [Lfetch.Info.textDoc hn]

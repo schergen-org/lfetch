@@ -14,6 +14,7 @@ private structure Palette where
   accent : Style
   muted : Style
 
+/-- Converts the string-based config colors into reusable render styles. -/
 private def paletteOfConfig (cfg : Config) : Palette :=
   {
     primary := Style.fg_hex cfg.colors.primary
@@ -132,12 +133,14 @@ private def renderGroup (cfg : Config) (palette : Palette) (maxWidth : Nat) (gro
     maxWidth := maxWidth
   }
 
+/-- Renders all configured groups without any warning banner. -/
 def renderConfig (cfg : Config) : IO (Doc Style) := do
   let width ← terminalWidth
   let palette := paletteOfConfig cfg
   let groupDocs ← cfg.groups.mapM (renderGroup cfg palette width)
   pure <| Layout.vcat (intersperseBlankLines groupDocs)
 
+/-- Renders all configured groups and prepends a warning box when needed. -/
 def renderReport (cfg : Config) (warnings : List String := []) : IO (Doc Style) := do
   let width ← terminalWidth
   let palette := paletteOfConfig cfg
@@ -148,9 +151,11 @@ def renderReport (cfg : Config) (warnings : List String := []) : IO (Doc Style) 
     | _ => warningBox palette width warnings :: groupDocs
   pure <| Layout.vcat (intersperseBlankLines docs)
 
+/-- Prints only the rendered config groups. -/
 def printConfig (cfg : Config) : IO Unit := do
   leansi.println ((← renderConfig cfg))
 
+/-- Prints the final report beside the ASCII logo. -/
 def printReport (cfg : Config) (warnings : List String := []) : IO Unit := do
   let dims <- leansi.getTerminalDimensions
   let cols := match dims with

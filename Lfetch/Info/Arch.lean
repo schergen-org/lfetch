@@ -6,6 +6,7 @@ namespace Lfetch.Info.Arch
 private def trimLine (s : String) : String :=
   (s.trimAscii).toString
 
+/-- Reads the machine architecture via `uname -m`. -/
 def fetch (colors : Lfetch.Colors) : IO Lfetch.Info.InfoLines := do
   try
     let out ← IO.Process.output { cmd := "uname", args := #["-m"] }

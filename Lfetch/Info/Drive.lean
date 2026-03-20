@@ -21,6 +21,7 @@ structure DriveEntry where
   mountPoint : String
   deriving Repr
 
+/-- Parses a `df -h` output line into a structured drive entry. -/
 private def parseDfLine (line : String) : Option DriveEntry :=
   let parts := line.splitOn " " |>.filter (· ≠ "")
   match parts with
@@ -36,7 +37,6 @@ private def parseDfLine (line : String) : Option DriveEntry :=
     }
   | _ => none
 
-/-- small bar visualisation like `[████░░░░░░] 42%`. -/
 private def parsePct (pctStr : String) : Nat :=
   ((pctStr.replace "%" "").trimAscii.toString).toNat?.getD 0
 
@@ -50,6 +50,7 @@ private def isRealFs (e : DriveEntry) : Bool :=
   let notExcluded := !(excludedFsTypes.any (· == e.filesystem))
   startsReal && notExcluded
 
+/-- Lists real mounted filesystems and renders each one with usage details and a bar. -/
 def fetch (colors : Lfetch.Colors) : IO Lfetch.Info.InfoLines := do
   try
     let result ← IO.Process.output {

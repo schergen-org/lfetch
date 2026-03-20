@@ -3,6 +3,7 @@ import Lfetch.Info.Common
 
 namespace Lfetch.Info.Terminal
 
+/-- Reports the terminal identifier from `TERM` or `TERM_PROGRAM`. -/
 def fetch (colors : Lfetch.Colors) : IO Lfetch.Info.InfoLines := do
   match (← IO.getEnv "TERM") with
   | some t => pure [Lfetch.Info.textDoc t]
