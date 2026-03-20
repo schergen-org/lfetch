@@ -53,7 +53,7 @@ The rendered output consists of:
 
 `lfetch` can be installed as a `.deb` package on Debian-based Linux distributions:
 
-Oneliner 
+### Oneliner 
 ```bash
 wget https://github.com/schergen-org/lfetch/releases/download/v1.0.0/lfetch_1.0.0_amd64.deb \
 && sudo dpkg -i ./lfetch_1.0.0_amd64.deb \
