@@ -22,7 +22,6 @@ private def getShellVersion (shellName : String) : IO String := do
   match shellName with
   | "bash" => do
       let v ← runShell "bash" "printf %s \"$BASH_VERSION\""
-      IO.println s!"Bash version output: {v}"
       pure (v.splitOn "(" |>.headD v)
 
   | "sh" | "ash" | "dash" | "es" =>
@@ -53,8 +52,11 @@ private def getShellVersion (shellName : String) : IO String := do
       let v := removeFirst v "version"
       pure v
     else do
-      let v ← runShell name "--version"
-      pure (removeFirst v s!" {shellName}")
+      let v ← IO.Process.output {
+        cmd := name
+        args := #["--version"]
+      }
+      pure (removeFirst v.stdout.trimAscii.toString s!" {shellName}")
 
 /-- Reports the shell path and version from the current process environment. -/
 def fetch (colors : Lfetch.Colors) : IO Lfetch.Info.InfoLines := do
