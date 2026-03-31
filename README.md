@@ -213,7 +213,3 @@ Fallback behavior varies per provider:
 - [`Lfetch/Runtime`](/Lfetch/Runtime) maps keys to provider modules
 - [`Lfetch/Info`](/Lfetch/Info) contains the individual info providers
 - [`Lfetch/Output`](/Lfetch/Output) contains report rendering
-
-## License
-
-This repository ships the GNU General Public License v3.0 in [`LICENSE`](/LICENSE).
