@@ -188,7 +188,7 @@ The currently supported keys are defined in [`Lfetch/Domain/InfoKey.lean`](/Lfet
 | `os` | `/etc/os-release`, fallback `uname -sr` | prints distro or kernel-style fallback |
 | `drive` | `df -h` | shows mount point, used/total, and a progress bar; filters out pseudo-filesystems |
 | `user` | `USER`, fallback `LOGNAME` | prints the current user |
-| `shell` | `SHELL` | prints the shell path |
+| `shell` | `SHELL` | prints the shell name and version |
 | `home` | `HOME` | prints the home directory |
 | `hostname` | `/etc/hostname`, fallback `uname -n` | prints the host name |
 | `kernel` | `uname -sr` | prints kernel name and release |
