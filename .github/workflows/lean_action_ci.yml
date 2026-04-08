@@ -12,3 +12,256 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: leanprover/lean-action@v1
+
+  environment-smoke:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - shell_name: sh
+            shell_bin: /bin/sh
+            term_mode: set
+            term_value: linux
+            term_program: ""
+            expected_terminal: linux
+          - shell_name: bash
+            shell_bin: /usr/bin/bash
+            term_mode: set
+            term_value: xterm-256color
+            term_program: ""
+            expected_terminal: xterm-256color
+          - shell_name: zsh
+            shell_bin: /usr/bin/zsh
+            term_mode: set
+            term_value: screen-256color
+            term_program: tmux
+            expected_terminal: screen-256color
+          - shell_name: fish
+            shell_bin: /usr/bin/fish
+            term_mode: unset
+            term_value: ""
+            term_program: vscode
+            expected_terminal: vscode
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: leanprover/lean-action@v1
+
+      - name: Install additional shells
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zsh fish
+
+      - name: Prepare isolated config
+        run: |
+          mkdir -p "$RUNNER_TEMP/home/.config/lfetch"
+          cat > "$RUNNER_TEMP/home/.config/lfetch/config.json" <<'EOF'
+          {
+            "colors": {
+              "primary": "#94e2d5",
+              "secondary": "#fab387",
+              "accent": "#89b4fa",
+              "muted": "#585b70",
+              "thresholdLow": "#a6e3a1",
+              "thresholdMid": "#f9e2af",
+              "thresholdHigh": "#f38ba8"
+            },
+            "groups": [
+              {
+                "title": "Environment",
+                "infos": ["shell", "terminal", "user", "home", "locale"]
+              }
+            ]
+          }
+          EOF
+
+      - name: Validate shell and terminal environment rendering
+        env:
+          HOME: ${{ runner.temp }}/home
+          USER: ci-user
+          LANG: C.UTF-8
+          LC_ALL: C.UTF-8
+        run: |
+          set -euo pipefail
+
+          assert_contains() {
+            local needle="$1"
+            grep -F "$needle" "$RUNNER_TEMP/output.txt" > /dev/null || {
+              echo "Missing expected text: $needle"
+              echo "--- output.txt ---"
+              cat "$RUNNER_TEMP/output.txt"
+              exit 1
+            }
+          }
+
+          export SHELL="${{ matrix.shell_bin }}"
+          if [ "${{ matrix.term_mode }}" = "set" ]; then
+            export TERM="${{ matrix.term_value }}"
+          else
+            unset TERM
+          fi
+          if [ -n "${{ matrix.term_program }}" ]; then
+            export TERM_PROGRAM="${{ matrix.term_program }}"
+          else
+            unset TERM_PROGRAM
+          fi
+
+          case "${{ matrix.shell_name }}" in
+            sh)
+              if [ "${{ matrix.term_mode }}" = "set" ]; then
+                script -qec 'stty rows 40 cols 160; export SHELL=/bin/sh USER=ci-user HOME='"$HOME"' LANG=C.UTF-8 LC_ALL=C.UTF-8 TERM='"${{ matrix.term_value }}"'; unset TERM_PROGRAM; /bin/sh -c ".lake/build/bin/lfetch"' /dev/null > "$RUNNER_TEMP/output.ansi"
+              else
+                script -qec 'stty rows 40 cols 160; export SHELL=/bin/sh USER=ci-user HOME='"$HOME"' LANG=C.UTF-8 LC_ALL=C.UTF-8 TERM_PROGRAM='"${{ matrix.term_program }}"'; unset TERM; /bin/sh -c ".lake/build/bin/lfetch"' /dev/null > "$RUNNER_TEMP/output.ansi"
+              fi
+              ;;
+            bash)
+              if [ "${{ matrix.term_mode }}" = "set" ]; then
+                script -qec 'stty rows 40 cols 160; export SHELL=/usr/bin/bash USER=ci-user HOME='"$HOME"' LANG=C.UTF-8 LC_ALL=C.UTF-8 TERM='"${{ matrix.term_value }}"' TERM_PROGRAM='"${{ matrix.term_program }}"'; /usr/bin/bash -lc ".lake/build/bin/lfetch"' /dev/null > "$RUNNER_TEMP/output.ansi"
+              else
+                script -qec 'stty rows 40 cols 160; export SHELL=/usr/bin/bash USER=ci-user HOME='"$HOME"' LANG=C.UTF-8 LC_ALL=C.UTF-8 TERM_PROGRAM='"${{ matrix.term_program }}"'; unset TERM; /usr/bin/bash -lc ".lake/build/bin/lfetch"' /dev/null > "$RUNNER_TEMP/output.ansi"
+              fi
+              ;;
+            zsh)
+              if [ "${{ matrix.term_mode }}" = "set" ]; then
+                script -qec 'stty rows 40 cols 160; export SHELL=/usr/bin/zsh USER=ci-user HOME='"$HOME"' LANG=C.UTF-8 LC_ALL=C.UTF-8 TERM='"${{ matrix.term_value }}"' TERM_PROGRAM='"${{ matrix.term_program }}"'; /usr/bin/zsh -lc ".lake/build/bin/lfetch"' /dev/null > "$RUNNER_TEMP/output.ansi"
+              else
+                script -qec 'stty rows 40 cols 160; export SHELL=/usr/bin/zsh USER=ci-user HOME='"$HOME"' LANG=C.UTF-8 LC_ALL=C.UTF-8 TERM_PROGRAM='"${{ matrix.term_program }}"'; unset TERM; /usr/bin/zsh -lc ".lake/build/bin/lfetch"' /dev/null > "$RUNNER_TEMP/output.ansi"
+              fi
+              ;;
+            fish)
+              if [ "${{ matrix.term_mode }}" = "set" ]; then
+                script -qec 'stty rows 40 cols 160; export SHELL=/usr/bin/fish USER=ci-user HOME='"$HOME"' LANG=C.UTF-8 LC_ALL=C.UTF-8 TERM='"${{ matrix.term_value }}"' TERM_PROGRAM='"${{ matrix.term_program }}"'; /usr/bin/fish -lc ".lake/build/bin/lfetch"' /dev/null > "$RUNNER_TEMP/output.ansi"
+              else
+                script -qec 'stty rows 40 cols 160; export SHELL=/usr/bin/fish USER=ci-user HOME='"$HOME"' LANG=C.UTF-8 LC_ALL=C.UTF-8 TERM_PROGRAM='"${{ matrix.term_program }}"'; unset TERM; /usr/bin/fish -lc ".lake/build/bin/lfetch"' /dev/null > "$RUNNER_TEMP/output.ansi"
+              fi
+              ;;
+          esac
+
+          perl -pe 's/\r//g; s/\x1B\[[0-9;?]*[ -\/]*[@-~]//g' "$RUNNER_TEMP/output.ansi" > "$RUNNER_TEMP/output.txt"
+
+          test -s "$RUNNER_TEMP/output.txt"
+          assert_contains "Environment"
+          assert_contains "Shell"
+          assert_contains "Terminal"
+          assert_contains "User"
+          assert_contains "Home"
+          assert_contains "Locale"
+          assert_contains "${{ matrix.shell_bin }}"
+          assert_contains "${{ matrix.expected_terminal }}"
+          assert_contains "ci-user"
+          assert_contains "${HOME}"
+          assert_contains "C.UTF-8"
+
+  full-config-render:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: leanprover/lean-action@v1
+
+      - name: Prepare isolated config
+        run: |
+          mkdir -p "$RUNNER_TEMP/home/.config/lfetch"
+          cat > "$RUNNER_TEMP/home/.config/lfetch/config.json" <<'EOF'
+          {
+            "colors": {
+              "primary": "#94e2d5",
+              "secondary": "#fab387",
+              "accent": "#89b4fa",
+              "muted": "#585b70",
+              "thresholdLow": "#a6e3a1",
+              "thresholdMid": "#f9e2af",
+              "thresholdHigh": "#f38ba8"
+            },
+            "groups": [
+              {
+                "title": "Overview",
+                "infos": ["dummy", "palette", "os", "drive", "user", "shell", "home", "hostname"]
+              },
+              {
+                "title": "System",
+                "padding": 1,
+                "infos": ["kernel", "arch", "terminal", "locale", "uptime", "cpu", "ram", "battery"]
+              }
+            ]
+          }
+          EOF
+
+      - name: Validate full configured output
+        env:
+          HOME: ${{ runner.temp }}/home
+          USER: ci-user
+          LANG: C.UTF-8
+          LC_ALL: C.UTF-8
+          SHELL: /usr/bin/bash
+          TERM: xterm-256color
+        run: |
+          set -euo pipefail
+
+          assert_contains() {
+            local needle="$1"
+            grep -F "$needle" "$RUNNER_TEMP/output.txt" > /dev/null || {
+              echo "Missing expected text: $needle"
+              echo "--- output.txt ---"
+              cat "$RUNNER_TEMP/output.txt"
+              exit 1
+            }
+          }
+
+          assert_regex() {
+            local pattern="$1"
+            grep -Eq "$pattern" "$RUNNER_TEMP/output.txt" || {
+              echo "Missing expected pattern: $pattern"
+              echo "--- output.txt ---"
+              cat "$RUNNER_TEMP/output.txt"
+              exit 1
+            }
+          }
+
+          EXPECTED_OS="$(bash -lc 'if [ -r /etc/os-release ]; then . /etc/os-release; if [ -n "${PRETTY_NAME:-}" ]; then printf "%s" "$PRETTY_NAME"; elif [ -n "${NAME:-}" ] && [ -n "${VERSION:-}" ]; then printf "%s %s" "$NAME" "$VERSION"; elif [ -n "${NAME:-}" ] && [ -n "${VERSION_ID:-}" ]; then printf "%s %s" "$NAME" "$VERSION_ID"; elif [ -n "${NAME:-}" ]; then printf "%s" "$NAME"; else uname -sr; fi; else uname -sr; fi')"
+          EXPECTED_HOSTNAME="$(cat /etc/hostname)"
+          EXPECTED_KERNEL="$(uname -sr)"
+          EXPECTED_ARCH="$(uname -m)"
+          EXPECTED_CPU="$(awk -F': ' '/^(model name|Hardware|Processor)[[:space:]]*:/{print $2; exit}' /proc/cpuinfo)"
+
+          script -qec 'stty rows 50 cols 180; export HOME='"$HOME"' USER=ci-user LANG=C.UTF-8 LC_ALL=C.UTF-8 SHELL=/usr/bin/bash TERM=xterm-256color; /usr/bin/bash -lc ".lake/build/bin/lfetch"' /dev/null > "$RUNNER_TEMP/output.ansi"
+          perl -pe 's/\r//g; s/\x1B\[[0-9;?]*[ -\/]*[@-~]//g' "$RUNNER_TEMP/output.ansi" > "$RUNNER_TEMP/output.txt"
+
+          test -s "$RUNNER_TEMP/output.txt"
+
+          for label in Overview System Dummy Palette OS Drive User Shell Home Hostname Kernel Arch Terminal Locale Uptime CPU RAM Battery; do
+            assert_contains "$label"
+          done
+
+          assert_contains "TODO(dummy-info)"
+          assert_contains "$EXPECTED_OS"
+          assert_contains "ci-user"
+          assert_contains "/usr/bin/bash"
+          assert_contains "${HOME}"
+          assert_contains "$EXPECTED_HOSTNAME"
+          assert_contains "$EXPECTED_KERNEL"
+          assert_contains "$EXPECTED_ARCH"
+          assert_contains "xterm-256color"
+          assert_contains "C.UTF-8"
+
+          if [ -n "$EXPECTED_CPU" ]; then
+            assert_contains "$EXPECTED_CPU"
+          else
+            assert_contains "unknown"
+          fi
+
+          assert_regex '([0-9]+d )?[0-9]+h [0-9]+m|[0-9]+m'
+          assert_regex '[0-9]+\.[0-9]{2} GiB / [0-9]+\.[0-9]{2} GiB'
+
+          if grep -F "No battery found" "$RUNNER_TEMP/output.txt" > /dev/null; then
+            :
+          else
+            assert_regex 'BAT[0-9A-Za-z_-]*'
+          fi
+
+          if grep -F "error running df" "$RUNNER_TEMP/output.txt" > /dev/null; then
+            echo "df failed unexpectedly"
+            cat "$RUNNER_TEMP/output.txt"
+            exit 1
+          fi

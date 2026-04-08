@@ -1,7 +1,7 @@
 [![Lean Action CI](https://github.com/schergen-org/lfetch/actions/workflows/lean_action_ci.yml/badge.svg)](https://github.com/schergen-org/lfetch/actions/workflows/lean_action_ci.yml)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-<a href="https://github.com/schergen-org/lfetch/releases/tag/v0.1.0" alt="Version 0.1.0">
-        <img src="https://img.shields.io/badge/version-0.1.0-blue" /></a>
+<a href="https://github.com/schergen-org/lfetch/releases/tag/v1.0.0" alt="Version 1.0.0">
+        <img src="https://img.shields.io/badge/version-1.0.0-green" /></a>
         
 <p align="center">This program serves as a sample implementation using <a href="https://github.com/schergen-org/Leansi">Leansi</a></p>
 
@@ -92,7 +92,7 @@ wget https://github.com/schergen-org/lfetch/releases/download/v1.0.0/lfetch_1.0.
 The repository is configured for:
 
 - Lean toolchain `leanprover/lean4:v4.28.0`
-- package version `0.1.0`
+- package version `1.0.0`
 - executable target `lfetch`
 - library target `Lfetch`
 
